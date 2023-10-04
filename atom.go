@@ -9,6 +9,7 @@ Resources:
 import (
 	"embed"
 	"fmt"
+	"image"
 
 	"github.com/ivanizag/iz6502"
 )
@@ -141,4 +142,8 @@ func (a *Atom) Poke(address uint16, value uint8) {
 
 func (a *Atom) SendKey(key int, released bool) {
 	a.keyboard.sendKey(key, released)
+}
+
+func (a *Atom) Snapshot() *image.RGBA {
+	return a.vdu.snapshot()
 }
