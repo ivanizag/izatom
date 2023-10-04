@@ -1,0 +1,72 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+FE71_scan_key:
+
+;  Scan key (except for CTRL, SHIFT, RPT and BRK).
+; Returns with flag C-1 if no key pressed, 
+; else C=0 and Y = key number. All registers destroyed.
+
+FE71  a0 3b     ldy #$3B
+FE73  18        clc 
+FE74  a9 20     lda #$20
+
+FE76  a2 0a     ldx #$0A
+
+FE78  2c 01 b0  bit PPI_PB
+FE7B  f0 08     beq $FE85
+FE7D  ee 00 b0  inc PPI_PA
+FE80  88        dey 
+FE81  ca        dex 
+FE82  d0 f4     bne $FE78
+FE84  4a        lsr A
+
+FE85  08        php 
+FE86  48        pha 
+FE87  ad 00 b0  lda PPI_PA
+FE8A  29 f0     and #$F0
+FE8C  8d 00 b0  sta PPI_PA
+FE8F  68        pla 
+FE90  28        plp 
+FE91  d0 e3     bne $FE76
+FE93  60        rts 
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+RDCH:
+;Wait for key press then return with its ASCII code in A. X and Y preserved.
+
+FE94  08        php 
+FE95  d8        cld 
+FE96  86 e4     stx $E4
+FE98  84 e5     sty $E5
+
+FE9A  2c 02 b0  bit PPI_PC                          ; Read port C, bit 6 is the rept button
+FE9D  50 05     bvc $FEA4                           ; Skip scan key if rept button is pressed
+
+FE9F  20 71 fe  jsr $FE71_scan_key_scan_keys        ; Read key pressed
+FEA2  90 f6     bcc $FE9A                           ; Loop if no key pressed
+
+FEA4  20 8a fb  jsr $FB8A
+
+FEA7  20 71 fe  jsr $FE71_scan_key_scan_keys
+FEAA  b0 fb     bcs $FEA7
+
+FEAC  20 71 fe  jsr $FE71_scan_key_scan_keys
+FEAF  b0 f6     bcs $FEA7
+
+FEB1  98        tya 
+FEB2  a2 17     ldx #$17
+FEB4  20 c5 fe  jsr $FEC5
+
+FEB7  bd e3 fe  lda $FEE3,X
+FEBA  85 e2     sta $E2
+FEBC  a9 fd     lda #$FD
+FEBE  85 e3     sta $E3
+FEC0  98        tya 
+FEC1  6c e2 00  jmp ($00E2)
+
+FEC4  ca        dex 
+
+FEC5  dd cb fe  cmp $FECB,X
+FEC8  90 fa     bcc $FEC4
+FECA  60        rts 
