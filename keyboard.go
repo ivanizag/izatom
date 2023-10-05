@@ -163,7 +163,7 @@ func (k *keyboard) getPB(pa uint8) uint8 {
 	if k.isPressed[KEY_CTRL] {
 		pb &^= 1 << 6
 	}
-	if k.isPressed[KEY_LSHIFT] {
+	if k.isPressed[KEY_LSHIFT] || k.isPressed[KEY_RSHIFT] {
 		pb &^= 1 << 7
 	}
 	return pb
