@@ -10,6 +10,7 @@ import (
 	"embed"
 	"fmt"
 	"image"
+	"time"
 
 	"github.com/ivanizag/iz6502"
 )
@@ -49,13 +50,23 @@ func NewAtom() *Atom {
 	return &a
 }
 
+const (
+	maxWaitDuration = 100 * time.Millisecond
+	cpuSpinLoops    = 100
+	cycleDurationNs = 1000 // 1 MHz
+)
+
 func (a *Atom) Run() {
 	a.cpu.Reset()
 
 	isDoingReset := false
+	referenceTime := time.Now()
+
 	for {
+		// Keyboard
 		a.keyboard.processKeys()
 
+		// Reset
 		if a.keyboard.getBreak() {
 			if !isDoingReset {
 				a.cpu.Reset()
@@ -66,6 +77,7 @@ func (a *Atom) Run() {
 			isDoingReset = false
 		}
 
+		// Traces
 		pc, _ := a.cpu.GetPCAndSP()
 		if pc == 0xfe66 {
 			// Skip tracing at FE66_wait_for_flyback_start
@@ -77,9 +89,25 @@ func (a *Atom) Run() {
 			// Resume tracing after the flyback wait
 			a.cpu.SetTrace(a.traceCPU)
 		}
-
 		a.traceOS()
+
+		// CPU
 		a.cpu.ExecuteInstruction()
+
+		// Spped control
+		if a.cpu.GetCycles()%cpuSpinLoops == 0 {
+			clockDuration := time.Since(referenceTime)
+			simulatedDuration := time.Duration(float64(a.cpu.GetCycles()) * cycleDurationNs)
+			waitDuration := simulatedDuration - clockDuration
+			if waitDuration > maxWaitDuration || -waitDuration > maxWaitDuration {
+				// We have to wait too long or are too much behind. Let's fast forward
+				referenceTime = referenceTime.Add(-waitDuration)
+				waitDuration = 0
+			}
+			if waitDuration > 0 {
+				time.Sleep(waitDuration)
+			}
+		}
 
 	}
 }
