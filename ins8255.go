@@ -18,6 +18,10 @@ func NewINS8255(a *Atom) *ins8255 {
 	}
 }
 
+func (i *ins8255) reset() {
+	// TODO
+}
+
 func (i *ins8255) write(port uint8, value uint8) {
 	switch port {
 	case 0:

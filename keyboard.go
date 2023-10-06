@@ -169,7 +169,7 @@ func (k *keyboard) getPB(pa uint8) uint8 {
 	return pb
 }
 
-func (k *keyboard) getReset() bool {
+func (k *keyboard) getBreak() bool {
 	return k.isPressed[KEY_BREAK]
 }
 

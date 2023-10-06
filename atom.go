@@ -17,9 +17,7 @@ import (
 const (
 	romStart  = 0xa000
 	ppiaStart = 0xb000
-	ppiaEnd   = 0xb7ff
 	viaStart  = 0xb800
-	viaEnd    = 0xbfff
 )
 
 type Atom struct {
@@ -28,7 +26,7 @@ type Atom struct {
 	ppia     *ins8255
 	keyboard *keyboard
 
-	ram [0xa000]uint8
+	ram [romStart]uint8
 	rom [0x10000 - romStart]uint8
 
 	traceCPU bool
@@ -53,7 +51,21 @@ func NewAtom() *Atom {
 
 func (a *Atom) Run() {
 	a.cpu.Reset()
+
+	isDoingReset := false
 	for {
+		a.keyboard.processKeys()
+
+		if a.keyboard.getBreak() {
+			if !isDoingReset {
+				a.cpu.Reset()
+				a.ppia.reset()
+				isDoingReset = true
+			}
+		} else {
+			isDoingReset = false
+		}
+
 		pc, _ := a.cpu.GetPCAndSP()
 		if pc == 0xfe66 {
 			// Skip tracing at FE66_wait_for_flyback_start
@@ -64,19 +76,11 @@ func (a *Atom) Run() {
 		} else if pc == 0xfe70 {
 			// Resume tracing after the flyback wait
 			a.cpu.SetTrace(a.traceCPU)
-		} else if pc == 0xfe93 {
-			//if a.cpu.GetTrace() {
-			_, regX, _, _ := a.cpu.GetAXYP()
-			if regX != 0 {
-				//fmt.Printf("[KEYBOARD] Key detected: %v\n", regX)
-			}
-			//}
 		}
 
 		a.traceOS()
 		a.cpu.ExecuteInstruction()
 
-		a.keyboard.processKeys()
 	}
 }
 
@@ -99,15 +103,15 @@ func (a *Atom) loadRom(name string, address uint16) {
 func (a *Atom) Peek(address uint16) uint8 {
 	if address < romStart {
 		return a.ram[address]
-	} else if address >= ppiaStart && address <= ppiaEnd {
-		port := uint8(address - ppiaStart)
+	} else if address&0xf800 == ppiaStart {
+		port := uint8(address & 0x03) // 2 bits used
 		value := a.ppia.read(port)
 		if a.cpu.GetTrace() {
 			fmt.Printf("[PPIA] Read: %04x, PPIA port%c = 0x%02x\n", address, 'A'+port, value)
 		}
 		return value
-	} else if address >= viaStart && address <= viaEnd {
-		port := uint8(address - viaStart)
+	} else if address&0xf800 == viaStart {
+		port := uint8(address & 0x0f) // 4 bits used
 		if a.cpu.GetTrace() {
 			fmt.Printf("[VIA] Read: %04x, VIA port%c\n", address, 'A'+port)
 		}
@@ -124,14 +128,14 @@ func (a *Atom) PeekCode(address uint16) uint8 {
 func (a *Atom) Poke(address uint16, value uint8) {
 	if address < romStart {
 		a.ram[address] = value
-	} else if address >= ppiaStart && address <= ppiaEnd {
-		port := uint8(address - ppiaStart)
+	} else if address&0xf800 == ppiaStart {
+		port := uint8(address & 0x03) // 2 bits used
 		if a.cpu.GetTrace() {
 			fmt.Printf("[PPIA] Write: %04x, PPIA port%c = 0x%02x - %08b\n", address, 'A'+port, value, value)
 		}
 		a.ppia.write(port, value)
-	} else if address >= viaStart && address <= viaEnd {
-		port := uint8(address - viaStart)
+	} else if address&0xf800 == viaStart {
+		port := uint8(address & 0x0f) // 4 bits used
 		if a.cpu.GetTrace() {
 			fmt.Printf("[VIA] Write: %04x, VIA port%c = 0x%02x - %08b\n", address, 'A'+port, value, value)
 		}
