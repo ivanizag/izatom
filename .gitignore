@@ -1,0 +1,5 @@
+.vscode/
+.scannerwork/
+coverage.out
+test.out
+

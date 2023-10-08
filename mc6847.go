@@ -18,7 +18,7 @@ func NewMC6847(a *Atom) *mc6847 {
 }
 func (mc *mc6847) snapshot() *image.RGBA {
 	pa := mc.a.ppia.read(INS8255_PORT_A)
-	isGraphic := (pa & 0x10) == 1 // pin A/G, from PA4
+	isGraphic := (pa & 0x10) != 0 // pin A/G, from PA4
 
 	if isGraphic {
 		return mc.snapshotGraphic()
@@ -28,7 +28,7 @@ func (mc *mc6847) snapshot() *image.RGBA {
 }
 
 // Colors taken from MAME, only the first 4 used as CSS is not connected
-var semigrahics6Palette = [8]color.RGBA{
+var palette = [8]color.RGBA{
 	{0x30, 0xd2, 0x00, 0xff}, /* GREEN */
 	{0xc1, 0xe5, 0x00, 0xff}, /* YELLOW */
 	{0x4c, 0x3a, 0xb4, 0xff}, /* BLUE */
@@ -77,9 +77,9 @@ func (mc *mc6847) snapshotText() *image.RGBA {
 					// The chip supports 8 colors, but CSS is
 					// always 0 and C0 is 1
 					darkColor := textColorDark
-					lightColor := semigrahics6Palette[1] // Yellow
+					lightColor := palette[1] // Yellow
 					if inverse {
-						lightColor = semigrahics6Palette[3] // Red
+						lightColor = palette[3] // Red
 					}
 					segment := (2 - (charLine / 4)) * 2
 					// First half
@@ -120,23 +120,82 @@ func (mc *mc6847) snapshotText() *image.RGBA {
 }
 
 func (mc *mc6847) snapshotGraphic() *image.RGBA {
-	return nil
-	/*
-	   pa := mc.a.ppia.read(INS8255_PORT_A)
-	   graphicMode := ((pa >> 5) & 0x07) // pins GM0-1-2 from PA5-6-7
+	pa := mc.a.ppia.read(INS8255_PORT_A)
+	graphicMode := ((pa >> 5) & 0x03) // pins GM0-1-2 from PA5-6-7
 
-	   size := image.Rect(0, 0, 256, 192)
-	   img := image.NewRGBA(size)
+	size := image.Rect(0, 0, 256, 192)
+	img := image.NewRGBA(size)
 
-	   	for l := 0; l < grLines; l++ {
-	   		for c := 0; c < columns; c++ {
-	   			img.Set(c*pixelWidth+i, l*4+r, v)
+	var columns int
+	var lines int
+	var colorBits int
+	switch graphicMode {
+	case 0:
+		// 64x64, 4 colors
+		columns, lines, colorBits = 64, 64, 2
+	case 1:
+		// 128x64, 2 colors
+		columns, lines, colorBits = 128, 64, 1
+	case 2:
+		// 128x64, 4 colors
+		columns, lines, colorBits = 128, 64, 2
+	case 3:
+		// 128x96, 2 colors
+		columns, lines, colorBits = 128, 96, 1
+	case 4:
+		// 128x96, 4 colors
+		columns, lines, colorBits = 128, 96, 2
+	case 5:
+		// 128x192, 2 colors
+		columns, lines, colorBits = 128, 192, 1
+	case 6:
+		// 128x192, 4 colors
+		columns, lines, colorBits = 128, 192, 2
+	case 7:
+		// 256x192, 2 colors
+		columns, lines, colorBits = 256, 192, 1
+	}
 
-	   		}
-	   	}
+	pixelWidth := 256 / columns
+	pixelHeight := 192 / lines
+	bytesPerLine := colorBits * columns / 8
+	pixelsPerByte := 8 / colorBits
 
-	   return img
-	*/
+	pointer := uint16(0x8000)
+	x := 0
+	y := 0
+	var color color.RGBA
+	for l := 0; l < lines; l++ {
+		x = 0
+		for b := 0; b < bytesPerLine; b++ {
+			data := mc.a.Peek(pointer)
+			pointer++
+			for pixel := 0; pixel < pixelsPerByte; pixel++ {
+				if colorBits == 1 {
+					if data&0x80 != 0 {
+						color = textColorLight
+					} else {
+						color = textColorDark
+					}
+					data <<= 1
+				} else if colorBits == 2 {
+					colorIndex := (data >> 6) & 0x03
+					color = palette[colorIndex]
+					data <<= 2
+				} else {
+					panic("invalid colorBits")
+				}
+				for i := 0; i < pixelWidth; i++ {
+					for j := 0; j < pixelHeight; j++ {
+						img.Set(x, y+j, color)
+					}
+					x++
+				}
+			}
+		}
+		y += pixelHeight
+	}
+	return img
 }
 
 /*

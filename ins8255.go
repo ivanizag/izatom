@@ -54,7 +54,8 @@ func (i *ins8255) read(port uint8) uint8 {
 }
 
 func (i *ins8255) readPortB() uint8 {
-	pb := i.a.keyboard.getPB(i.ports[INS8255_PORT_A])
+	pa0_3 := i.ports[INS8255_PORT_A&0x0f]
+	pb := i.a.keyboard.getPB(pa0_3)
 	i.ports[INS8255_PORT_B] = pb
 	return pb
 }

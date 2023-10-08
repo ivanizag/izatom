@@ -153,11 +153,13 @@ func (k *keyboard) processKeys() {
 
 }
 
-func (k *keyboard) getPB(pa uint8) uint8 {
+func (k *keyboard) getPB(pa0_3 uint8) uint8 {
 	var pb uint8 = 0xff // Pull-up resistors
-	for i := 0; i < 6; i++ {
-		if k.isPressed[keyboardMatrix[i][pa]] {
-			pb &^= 1 << i
+	if pa0_3 < 10 {
+		for i := 0; i < 6; i++ {
+			if k.isPressed[keyboardMatrix[i][pa0_3]] {
+				pb &^= 1 << i
+			}
 		}
 	}
 	if k.isPressed[KEY_CTRL] {
