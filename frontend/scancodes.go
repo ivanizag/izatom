@@ -36,7 +36,7 @@ func sendKey(a *izatom.Atom, e *sdl.KeyboardEvent) {
 		atomkey = izatom.KEY_COLON_ASTERISK
 	case sdl.SCANCODE_INSERT:
 		atomkey = izatom.KEY_UP
-	case sdl.SCANCODE_DELETE:
+	case sdl.SCANCODE_DELETE, sdl.SCANCODE_F12: // Alternative for Macbook keyboards with no DEL key
 		atomkey = izatom.KEY_BREAK
 
 	case sdl.SCANCODE_LEFT:
