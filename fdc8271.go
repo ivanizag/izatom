@@ -50,6 +50,8 @@ func (fdc *fdc8271) reset() {
 func (fdc *fdc8271) startRead() {
 	fdc.index = 256*10*int(fdc.track) + 256*int(fdc.sector)
 	fdc.readEnd = fdc.index + 256*int(fdc.sectorCount)
+
+	fmt.Printf("[FDC] Read data from %v to %v\n", fdc.index, fdc.readEnd)
 }
 
 func (fdc *fdc8271) write(port uint8, value uint8) {
@@ -90,15 +92,16 @@ func (fdc *fdc8271) write(port uint8, value uint8) {
 				fdc.sectorCount = value & 0x1f
 				fmt.Printf("[FDC] Multirecord parameters: track %v, sector %v, count %v, record size %v\n",
 					fdc.track, fdc.sector, fdc.sectorCount, 128*(1<<(value>>5)))
+				fdc.status = 0x80 /* busy */ | 0x04 /* interrupt request */
+				fdc.a.raiseNMIDelayed(40)
+				fdc.startRead()
 			}
-			fdc.status = 0x80 /* busy */ | 0x04 /* interrupt request */
-			fdc.a.raiseNMIDelayed(40)
-			fdc.startRead()
 		case 0x29: // SEEK
 			fdc.track = value
 		}
 		fdc.param++
 	case 2:
+		fdc.status = 0x00
 		fmt.Printf("[FDC] Reset: %v\n", value)
 	case 3:
 		fmt.Printf("[FDC] Do not use: %v\n", value)
@@ -137,7 +140,7 @@ func (fdc *fdc8271) read(port uint8) uint8 {
 }
 
 func (fdc *fdc8271) loadDisk( /*name string*/ ) {
-	data, err := os.ReadFile("/Users/cx01931/privcode/izatom/disks/mode4_graphics.40t")
+	data, err := os.ReadFile("../disks/mode4_graphics.40t")
 	if err != nil {
 		panic(err)
 	}
