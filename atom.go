@@ -25,10 +25,13 @@ type Atom struct {
 	cpu      *iz6502.State
 	vdu      *mc6847
 	ppia     *ins8255
+	fdc      *fdc8271
 	keyboard *keyboard
 
 	ram [romStart]uint8
 	rom [0x10000 - romStart]uint8
+
+	raiseNMIDelayedCycle uint64
 
 	traceCPU bool
 }
@@ -38,6 +41,7 @@ func NewAtom() *Atom {
 	a.cpu = iz6502.NewNMOS6502(&a)
 	a.vdu = NewMC6847(&a)
 	a.ppia = NewINS8255(&a)
+	a.fdc = NewFDC8271(&a)
 	a.keyboard = newKeyboard()
 
 	a.loadRom("akernel.rom", 0xf000)
@@ -77,6 +81,12 @@ func (a *Atom) Run() {
 			isDoingReset = false
 		}
 
+		// NMI
+		if a.raiseNMIDelayedCycle != 0 && a.cpu.GetCycles() >= a.raiseNMIDelayedCycle {
+			a.cpu.RaiseNMI()
+			a.raiseNMIDelayedCycle = 0
+		}
+
 		// Traces
 		pc, _ := a.cpu.GetPCAndSP()
 		if pc == 0xfe66 {
@@ -112,6 +122,10 @@ func (a *Atom) Run() {
 	}
 }
 
+func (a *Atom) raiseNMIDelayed(delayCycles uint64) {
+	a.raiseNMIDelayedCycle = a.cpu.GetCycles() + delayCycles
+}
+
 //go:embed resources
 var resources embed.FS
 
@@ -129,7 +143,10 @@ func (a *Atom) loadRom(name string, address uint16) {
 
 // Memory interface
 func (a *Atom) Peek(address uint16) uint8 {
-	if address < romStart {
+	if address&0xff00 == 0x0a00 {
+		port := uint8(address & 0x07) // 3 bits used
+		return a.fdc.read(port)
+	} else if address < romStart {
 		return a.ram[address]
 	} else if address&0xf800 == ppiaStart {
 		port := uint8(address & 0x03) // 2 bits used
@@ -154,7 +171,10 @@ func (a *Atom) PeekCode(address uint16) uint8 {
 }
 
 func (a *Atom) Poke(address uint16, value uint8) {
-	if address < romStart {
+	if address&0xff00 == 0x0a00 {
+		port := uint8(address & 0x07) // 3 bits used
+		a.fdc.write(port, value)
+	} else if address < romStart {
 		a.ram[address] = value
 	} else if address&0xf800 == ppiaStart {
 		port := uint8(address & 0x03) // 2 bits used
