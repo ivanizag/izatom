@@ -121,7 +121,7 @@ func (mc *mc6847) snapshotText() *image.RGBA {
 
 func (mc *mc6847) snapshotGraphic() *image.RGBA {
 	pa := mc.a.ppia.read(INS8255_PORT_A)
-	graphicMode := ((pa >> 5) & 0x03) // pins GM0-1-2 from PA5-6-7
+	graphicMode := ((pa >> 5) & 0x07) // pins GM0-1-2 from PA5-6-7
 
 	size := image.Rect(0, 0, 256, 192)
 	img := image.NewRGBA(size)
