@@ -17,6 +17,11 @@ See the FDC 8271 datasheet for more information.
 
 Disks are single side and single density
 256 bytes per sector, 40 tracks, 92kb per disk
+
+
+TODO / BUGS:
+ . When DOS loads a file that span two tracks, only the sectors from
+ the first track are loaded.
 */
 
 type fdc8271 struct {
@@ -92,7 +97,9 @@ func (fdc *fdc8271) write(port uint8, value uint8) {
 				fdc.sectorCount = value & 0x1f
 				fmt.Printf("[FDC] Multirecord parameters: track %v, sector %v, count %v, record size %v\n",
 					fdc.track, fdc.sector, fdc.sectorCount, 128*(1<<(value>>5)))
-				fdc.status = 0x80 /* busy */ | 0x04 /* interrupt request */
+				fdc.status = 0x80 /* busy */ |
+					0x08 /* interrupt request */ |
+					0x04 /* Non DMA mode */
 				fdc.a.raiseNMIDelayed(40)
 				fdc.startRead()
 			}
@@ -115,7 +122,7 @@ func (fdc *fdc8271) write(port uint8, value uint8) {
 func (fdc *fdc8271) read(port uint8) uint8 {
 	switch port {
 	case 0:
-		//fmt.Printf("[FDC] Status\n")
+		// fmt.Printf("[FDC] Status\n")
 		return fdc.status
 	case 1:
 		fmt.Printf("[FDC] Result\n")
@@ -127,12 +134,14 @@ func (fdc *fdc8271) read(port uint8) uint8 {
 	default:
 		value := fdc.data[fdc.index]
 		fdc.index++
+
 		if fdc.index >= fdc.readEnd {
-			fdc.status = 0x00
+			fdc.status = 0x00 + 0x04 /* Non DMA mode */
 			fmt.Printf("[FDC] Read data completed\n")
 		} else {
 			fdc.a.raiseNMIDelayed(40)
 		}
+
 		//fmt.Printf("[FDC] Read data at %v\n", port)
 		return value
 	}

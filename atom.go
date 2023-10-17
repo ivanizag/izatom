@@ -48,6 +48,7 @@ func NewAtom() *Atom {
 	a.loadRom("dosrom.rom", 0xe000)
 	a.loadRom("afloat.rom", 0xd000)
 	a.loadRom("abasic.rom", 0xc000)
+	a.loadRom("Demo.rom", 0xa000)
 
 	//a.traceCPU = true
 	a.cpu.SetTrace(a.traceCPU)
@@ -75,6 +76,7 @@ func (a *Atom) Run() {
 			if !isDoingReset {
 				a.cpu.Reset()
 				a.ppia.reset()
+				a.fdc.reset()
 				isDoingReset = true
 			}
 		} else {
@@ -100,6 +102,9 @@ func (a *Atom) Run() {
 			a.cpu.SetTrace(a.traceCPU)
 		}
 		a.traceOS()
+
+		// Trace DOS
+		//a.cpu.SetTrace(pc >= 0xe000 && pc <= 0xefff)
 
 		// CPU
 		a.cpu.ExecuteInstruction()
@@ -187,8 +192,6 @@ func (a *Atom) Poke(address uint16, value uint8) {
 		if a.cpu.GetTrace() {
 			fmt.Printf("[VIA] Write: %04x, VIA port%c = 0x%02x - %08b\n", address, 'A'+port, value, value)
 		}
-	} else {
-		// Do nothing
 	}
 }
 
