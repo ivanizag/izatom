@@ -1,0 +1,2535 @@
+              *************************************
+              * Disassembly of Atom Extension ROM *
+              *         from #D000 to #DFFF       *
+              *************************************
+
+Version 1.0
+22:11:85
+
+
+  Subroutines...
+  **************
+
+D236 Something to do with 'ASN' subroutine
+D303 Get to next non-space character subroutine
+D49A ??? subroutine
+D4C3 ??? subroutine
+D4D0 ??? subroutine
+D587 ??? subroutine
+D594 ??? subroutine
+D636 ??? subroutine
+D642 ??? subroutine
+D64E ??? subroutine
+D67B ??? subroutine
+D686 ??? subroutine
+D6A0 ??? subroutine
+D6C3 Copy the 8 bytes #57..#5E to #5F..66 subroutine
+D6CD Shift Left 1 Bit #5E..#5A subroutine
+D6D8 Shift Right 1 Bit #5A..#5E subroutine
+D6E3 Copy #5A..#5D to #5B..#5E and clear #5A subroutine
+D706 Copy #62..#65 to #63..#66 and clear #62 subroutine
+D71B ??? subroutine
+D778 ??? subroutine
+D7B2 ??? subroutine
+D804 ??? subroutine
+D827 ??? subroutine
+D85D ??? subroutine
+D870 ??? subroutine
+D880 ??? subroutine
+D892 ??? subroutine
+D8BB ??? subroutine
+D8D1 ??? subroutine
+D8E2 ??? subroutine
+D913 ??? subroutine
+D923 ??? subroutine
+DAAE ??? subroutine
+DB9E ??? subroutine
+DBB3 ??? subroutine
+DC27 ??? subroutine
+DD86 ??? subroutine
+DD8A ??? subroutine
+DD93 ??? subroutine
+DE51 ??? subroutine
+DE83 Something to do with 'HTN' subroutine
+
+
+  Other routines...
+  *****************
+
+D000 Extension ROM Existence Check Bytes
+D002 Extension Interpreter Jump Vector
+D004 Extension Interpreter Jump Vector
+D006 Extension Command Table and Jump Addresses
+D0E4 Deal with '('
+D0EB Deal with '+' and '-'
+D0F2 Deal with '*' and '/'
+D0FC Deal with '+' and '-'
+D103 Deal with '^'
+D10E Floating Point interpreter
+D15E Floating Point interpreter
+D177 Deals with '+'
+D183 Deals with '-'
+D18F Deals with '*'
+D19B Deals with '/'
+D1A7 Deals with '^'
+D1BC Deals with '-'
+D1CB Deals with '+'
+D215 Execute the Command 'ABS'
+D21E Execute the Command 'ACS'
+D224 Execute the Command 'ASN'
+D265 Execute the Command 'RAD'
+D273 Execute the Command 'DEG'
+D27C ??? Table
+D286 Execute the Command 'TAN'
+D296 ???
+D29A Execute the Command 'FLT'
+D2C3 Execute the Command 'PI'
+D2CC Execute the Command 'FGET'
+D2E0 Execute the Command 'VAL'
+D30B Execute the Command '%'
+D31F Execute the Command 'STR'
+D331 Execute the Command 'FPRINT'
+D339 ???
+D36A Execute the Command 'FINPUT'
+D3A8 Execute the Command 'FIF'
+D3AE Execute the Command 'FUNTIL'
+D3B4 Execute the Command 'FPUT'
+D3D3 Execute the Command 'FDIM'
+D444 ???
+D494 ???
+D4AF Pass Control to Utility Interpreter, if it Exists
+D933 ???
+D939 ???
+D9EB ???
+D9F6 Execute the conditional test '='
+D9FA Execute the conditional test '<='
+D9FE Execute the conditional test '<>'
+DA02 Execute the conditional test '<'
+DA06 Execute the conditional test '>='
+DA0A Execute the conditional test '>'
+DAC4 Execute the command 'TAN'
+DB6F Execute the command 'SQR'
+DBF9 ??? Table
+DC64 Execute the command 'ATN'
+DCB0 ??? Table
+DCE3 Execute the command 'COS'
+DCEE Execute the command 'SIN'
+DD24 ???
+DD97 ??? Table
+DDD4 Execute the command 'EXP'
+DE23 ??? Table
+DE72 Execute the command 'HTN'
+DED4 ??? Table
+DF02 Execute the command 'COLOUR'
+DF42 Colour Point Plot routine LSB Address Table
+DF46 Colour Point Plot routine MSB Address Table
+DF4A ??? Data Table
+DF4E Colour Byte Table
+DF52 Mode 1 Colour Point Plot routine
+DF70 Mode 2 Colour Point Plot routine
+DF88 Mode 3 Colour Point Plot routine
+DFA0 Mode 4 Colour Point Plot routine
+
+
+  Extension ROM Existence Check Bytes
+  -----------------------------------
+
+D000  AA 55
+
+
+  Extension Interpreter Jump Vector
+  ---------------------------------
+
+- Used by #C54A routine.
+
+D002  0E D1
+
+
+  Extension Interpreter Jump Vector
+  ---------------------------------
+
+- Used by #CA24 routine.
+
+D004  5E D1
+
+
+  Extension Command Table and Jump Addresses
+  ------------------------------------------
+
+D006                    28 D0 E4 41 43 53 D2 1E 41 53        (..ACS..AS
+D010  4E D2 24 41 54 4E DC 64 41 42 53 D2 15 43 4F 53  N..ATN..ABS..COS
+D020  DC E3 45 58 50 DD D4 48 54 4E DE 72 4C 4F 47 DB  ..EXP..HTN..LOG.
+D030  B3 50 49 D2 C3 53 49 4E DC EE 53 51 52 DB 6F 54  .PI..SIN..SQR..T
+D040  41 4E DA C4 44 45 47 D2 73 52 41 44 D2 65 53 47  AN..DEG..RAD..SG
+D050  4E D2 86 56 41 4C D2 E0 46 4C 54 D2 9A 46 47 45  N..VAL..FLT..FGE
+D060  54 D2 CC D2 96 25 D3 0B 46 49 46 D3 A8 46 55 4E  T....%..FIF..FUN
+D070  54 49 4C D3 AE 43 4F 4C 4F 55 52 DF 02 46 44 49  TIL..COLOUR..FDI
+D080  4D D3 D3 53 54 52 D3 1F 46 50 52 49 4E 54 D3 31  M..STR..FPRINT..
+D090  46 49 4E 50 55 54 D3 6A 46 50 55 54 D3 B4 D4 AF  FINPUT..FPUT....
+D0A0  2B D1 77 2D D1 83 FE 2A D1 8F 2F D1 9B FE 5E D1  +.w-...*../...^.
+D0B0  A7 FE 2B D1 CB 2D D1 BC D1 CB 29 C2 78 FF 3B C5  ..+..-....).x.;.
+D0C0  4A 0D C5 4A 2C D3 31 D3 39 2C D3 6A C5 58 3D D9  J..J,.1.9,.j.X=.
+D0D0  F6 3C 3E D9 FE 3C 3D D9 FA 3C DA 02 3E 3D DA 06  .<>..<=..<..>=..
+D0E0  3E DA 0A FF                                      >...
+
+
+  Deal with '('
+  -------------
+
+D0E4  20 FC D0  JSR #D0FC
+D0E7  A2 B4     LDX @#B4        Point to command table at #D0BA
+D0E9  D0 20     BNE #D10B
+
+
+  Deal with '+' and '-'
+  ---------------------
+
+D0EB  18        CLC
+D0EC  66 73     ROR #73
+D0EE  A2 AC     LDX @#AC        Point to command table at #D0B2
+D0F0  D0 19     BNE #D10B
+
+
+  Deal with '*' and '/'
+  ---------------------
+
+D0F2  20 5D D8  JSR #D85D
+D0F5  20 06 D1  JSR #D106
+D0F8  A2 A1     LDX @#A1
+D0FA  D0 0F     BNE #D10B
+
+
+  Deal with '+' and '-'
+  ---------------------
+
+D0FC  20 F5 D0  JSR #D0F5
+D0FF  A2 9A     LDX @#9A
+D101  D0 08     BNE #D10B
+
+
+  Deal with '^'
+  -------------
+
+D103  20 5D D8  JSR #D85D
+D106  20 EB D0  JSR #D0EB
+D109  A2 A8     LDX @#A8
+D10B  18        CLC
+D10C  90 05     BCC #D113
+
+
+  Floating Point interpreter
+  --------------------------
+
+- Indirected by (#D002).
+
+D10E  A2 5F     LDX @#5F
+D110  84 03     STY #3
+D112  38        SEC
+D113  66 53     ROR #53
+D115  A4 03     LDY #3
+D117  88        DEY
+D118  C8        INY
+D119  B1 05     LDA (#5),Y
+D11B  C9 20     CMP @#20
+D11D  F0 F9     BEQ #D118
+D11F  88        DEY
+D120  84 52     STY #52
+D122  CA        DEX
+D123  A4 52     LDY #52
+D125  E8        INX
+D126  C8        INY
+D127  BD 06 D0  LDA #D006,X
+D12A  30 1A     BMI #D146
+D12C  D1 05     CMP (#5),Y
+D12E  F0 F5     BEQ #D125
+D130  CA        DEX
+D131  E8        INX
+D132  BD 06 D0  LDA #D006,X
+D135  10 FA     BPL #D131
+D137  E8        INX
+D138  24 53     BIT #53
+D13A  10 E7     BPL #D123
+D13C  B1 05     LDA (#5),Y
+D13E  C9 2E     CMP @#2E
+D140  D0 E1     BNE #D123
+D142  C8        INY
+D143  CA        DEX
+D144  B0 E1     BCS #D127
+D146  C9 FE     CMP @#FE
+D148  B0 11     BCS #D15B
+D14A  85 53     STA #53
+D14C  BD 07 D0  LDA #D007,X
+D14F  85 52     STA #52
+D151  84 03     STY #3
+D153  A6 04     LDX #4
+D155  6C 52 00  JMP (#52)
+
+
+D158  A6 04     LDX #4
+D15A  60        RTS
+
+
+D15B  F0 FB     BEQ #D158
+D15D  00        BRK
+
+
+  Floating Point interpreter
+  --------------------------
+
+- Indirected via (#D004).
+
+D15E  84 03     STY #3
+D160  20 EC D0  JSR #D0EC
+D163  20 9A D8  JSR #D89A
+D166  A5 5A     LDA #5A
+D168  85 60     STA #60
+D16A  A5 5B     LDA #5B
+D16C  85 5F     STA #5F
+D16E  A5 5C     LDA #5C
+D170  85 5E     STA #5E
+D172  A0 5D     LDY @#5D
+D174  4C 9F C9  JMP #C99F
+
+
+  Deals with '+'
+  --------------
+
+D177  20 F2 D0  JSR #D0F2
+D17A  20 70 D8  JSR #D870
+D17D  20 3C D9  JSR #D93C
+D180  4C FF D0  JMP #D0FF
+
+
+  Deals with '-'
+  --------------
+
+D183  20 F2 D0  JSR #D0F2
+D186  20 70 D8  JSR #D870
+D189  20 39 D9  JSR #D939
+D18C  4C FF D0  JMP #D0FF
+
+
+  Deals with '*'
+  --------------
+
+D18F  20 03 D1  JSR #D103
+D192  20 70 D8  JSR #D870
+D195  20 45 DA  JSR #DA45
+D198  4C F8 D0  JMP #D0F8
+
+
+  Deals with '/'
+  --------------
+
+D19B  20 03 D1  JSR #D103
+D19E  20 70 D8  JSR #D870
+D1A1  20 B6 DA  JSR #DAB6
+D1A4  4C F8 D0  JMP #D0F8
+
+
+  Deals with '^'
+  --------------
+
+D1A7  20 B6 DB  JSR #DBB6
+D1AA  20 5D D8  JSR #D85D
+D1AD  20 EB D0  JSR #D0EB
+D1B0  20 70 D8  JSR #D870
+D1B3  20 45 DA  JSR #DA45
+D1B6  20 D7 DD  JSR #DDD7
+D1B9  4C 09 D1  JMP #D109
+
+
+  Deals with '-'
+  --------------
+
+D1BC  20 CB D1  JSR #D1CB
+D1BF  20 86 D6  JSR #D686
+D1C2  F0 06     BEQ #D1CA
+D1C4  A5 57     LDA #57
+D1C6  49 80     EOR @#80
+D1C8  85 57     STA #57
+D1CA  60        RTS
+
+
+  Deals with '+'
+  --------------
+
+D1CB  A4 03     LDY #3
+D1CD  88        DEY
+D1CE  C8        INY
+D1CF  B1 05     LDA (#5),Y
+D1D1  C9 20     CMP @#20
+D1D3  F0 F9     BEQ #D1CE
+D1D5  C9 25     CMP @#25
+D1D7  D0 32     BNE #D20B
+D1D9  E6 03     INC #3
+D1DB  20 44 D4  JSR #D444
+D1DE  90 2B     BCC #D20B
+D1E0  A0 6F     LDY @#6F
+D1E2  20 CD C3  JSR #C3CD
+D1E5  A0 04     LDY @#4
+D1E7  A9 00     LDA @#0
+D1E9  85 5E     STA #5E
+D1EB  85 58     STA #58
+D1ED  85 57     STA #57
+D1EF  B1 6F     LDA (#6F),Y
+D1F1  99 59 00  STA #59,Y
+D1F4  05 57     ORA #57
+D1F6  85 57     STA #57
+D1F8  88        DEY
+D1F9  10 F4     BPL #D1EF
+D1FB  AA        TAX
+D1FC  F0 09     BEQ #D207
+D1FE  A5 5A     LDA #5A
+D200  85 57     STA #57
+D202  09 80     ORA @#80
+D204  85 5A     STA #5A
+D206  8A        TXA
+D207  60        RTS
+
+
+D208  84 03     STY #3
+D20A  60        RTS
+
+
+D20B  20 A5 D5  JSR #D5A5
+D20E  B0 F8     BCS #D208
+D210  A2 00     LDX @#0
+D212  4C 12 D1  JMP #D112
+
+
+  Execute the Command 'ABS'
+  -------------------------
+
+D215  20 EB D0  JSR #D0EB
+D218  20 86 D6  JSR #D686
+D21B  30 A7     BMI #D1C4
+D21D  60        RTS
+
+
+  Execute the Command 'ACS'
+  -------------------------
+
+D21E  20 24 D2  JSR #D224
+D221  4C 86 DC  JMP #DC86
+
+
+  Execute the Command 'ASN'
+  -------------------------
+
+D224  20 EB D0  JSR #D0EB
+D227  20 86 D6  JSR #D686
+D22A  10 0A     BPL #D236
+D22C  A9 00     LDA @#0
+D22E  85 57     STA #57
+D230  20 36 D2  JSR #D236
+D233  4C 75 DC  JMP #DC75
+
+
+  Something to do with 'ASN' subroutine
+  -------------------------------------
+
+D236  20 2C D8  JSR #D82C
+D239  20 45 DA  JSR #DA45
+D23C  20 31 D8  JSR #D831
+D23F  20 8D DE  JSR #DE8D
+D242  20 33 D9  JSR #D933
+D245  20 72 DB  JSR #DB72
+D248  20 86 D6  JSR #D686
+D24B  F0 12     BEQ #D25F
+D24D  20 31 D8  JSR #D831
+D250  20 A6 DB  JSR #DBA6
+D253  20 E5 D1  JSR #D1E5
+D256  20 AA DB  JSR #DBAA
+D259  20 DC DA  JSR #DADC
+D25C  4C 67 DC  JMP #DC67
+
+
+D25F  20 93 DD  JSR #DD93
+D262  4C E5 D1  JMP #D1E5
+
+
+  Execute the Command 'RAD'
+  -------------------------
+
+D265  20 EB D0  JSR #D0EB
+D268  A0 7C     LDY @#7C
+D26A  A9 D2     LDA @#D2
+D26C  84 6F     STY #6F
+D26E  85 70     STA #70
+D270  4C 45 DA  JMP #DA45
+
+
+  Execute the Command 'DEG'
+  -------------------------
+
+D273  20 EB D0  JSR #D0EB
+D276  A0 81     LDY @#81
+D278  A9 D2     LDA @#D2
+D27A  D0 F0     BNE #D26C
+
+
+  ??? Table
+  ---------
+
+D27C  7B 0E FA 35 12
+
+
+D281  86 65     STX #65
+D283  2E E0 D3  ROL #D3E0
+
+
+  Execute the Command 'TAN'
+  -------------------------
+
+D286  20 EB D0  JSR #D0EB
+D289  20 86 D6  JSR #D686
+D28C  F0 07     BEQ #D295
+D28E  48        PHA
+D28F  20 8D DE  JSR #DE8D
+D292  68        PLA
+D293  85 57     STA #57
+D295  60        RTS
+
+
+  ???
+  ---
+
+D296  24 73     BIT #73
+D298  30 26     BMI #D2C0
+
+
+  Execute the Command 'FLT'
+  -------------------------
+
+D29A  20 BC C8  JSR #C8BC
+D29D  A0 5D     LDY @#5D
+D29F  20 CD C3  JSR #C3CD
+D2A2  85 5A     STA #5A
+D2A4  A5 5F     LDA #5F
+D2A6  85 5B     STA #5B
+D2A8  A5 5E     LDA #5E
+D2AA  85 5C     STA #5C
+D2AC  A9 A0     LDA @#A0
+D2AE  85 59     STA #59
+D2B0  A0 00     LDY @#0
+D2B2  84 5E     STY #5E
+D2B4  A5 5A     LDA #5A
+D2B6  85 57     STA #57
+D2B8  10 03     BPL #D2BD
+D2BA  20 D5 D8  JSR #D8D5
+D2BD  4C C8 D7  JMP #D7C8
+
+D2C0  4C 1B CA  JMP #CA1B       Execute BRK
+
+
+  Execute the Command 'PI'
+  ------------------------
+
+D2C3  20 93 DD  JSR #DD93
+D2C6  20 E5 D1  JSR #D1E5
+D2C9  E6 59     INC #59
+D2CB  60        RTS
+
+
+  Execute the Command 'FGET'
+  --------------------------
+
+D2CC  20 3E CF  JSR #CF3E
+D2CF  A2 04     LDX @#4
+D2D1  20 D4 FF  JSR #FFD4
+D2D4  9D C5 03  STA #3C5,X
+D2D7  CA        DEX
+D2D8  10 F7     BPL #D2D1
+D2DA  20 AA DB  JSR #DBAA
+D2DD  4C E5 D1  JMP #D1E5
+
+
+  Execute the Command 'VAL'
+  -------------------------
+
+D2E0  20 B1 CE  JSR #CEB1
+D2E3  A0 00     LDY @#0
+D2E5  20 04 D3  JSR #D304
+D2E8  C9 2B     CMP @#2B
+D2EA  F0 0F     BEQ #D2FB
+D2EC  C9 2D     CMP @#2D
+D2EE  D0 0E     BNE #D2FE
+D2F0  20 03 D3  JSR #D303
+D2F3  84 54     STY #54
+D2F5  20 B1 D5  JSR #D5B1
+D2F8  4C BF D1  JMP #D1BF
+
+D2FB  20 03 D3  JSR #D303
+D2FE  84 54     STY #54
+D300  4C B1 D5  JMP #D5B1
+
+
+  Get to next non-space character subroutine
+  ------------------------------------------
+
+D303  C8        INY
+D304  B1 52     LDA (#52),Y
+D306  C9 20     CMP @#20
+D308  F0 F9     BEQ #D303
+D30A  60        RTS
+
+
+  Execute the Command '%'
+  -----------------------
+
+D30B  20 44 D4  JSR #D444
+D30E  90 D4     BCC #D2E4
+D310  20 79 C2  JSR #C279
+D313  20 FC D0  JSR #D0FC
+D316  20 E4 C4  JSR #C4E4
+D319  20 36 D8  JSR #D836
+D31C  4C 5B C5  JMP #C55B
+
+
+  Execute the Command 'STR'
+  -------------------------
+
+D31F  20 FC D0  JSR #D0FC
+D322  20 31 C2  JSR #C231
+D325  20 E1 C4  JSR #C4E1
+D328  20 CB C3  JSR #C3CB
+D32B  20 D0 D4  JSR #D4D0
+D32E  4C 5B C5  JMP #C55B
+
+
+  Execute the Command 'FPRINT'
+  ----------------------------
+
+D331  20 72 C3  JSR #C372
+D334  A2 B8     LDX @#B8
+D336  4C 0B D1  JMP #D10B
+
+
+  ???
+  ---
+
+D339  20 FC D0  JSR #D0FC
+D33C  A9 C5     LDA @#C5
+D33E  85 52     STA #52
+D340  A9 03     LDA @#3
+D342  85 53     STA #53
+D344  20 D0 D4  JSR #D4D0
+D347  C6 6F     DEC #6F
+D349  AD 21 03  LDA #321
+D34C  38        SEC
+D34D  E5 6F     SBC #6F
+D34F  90 0B     BCC #D35C
+D351  F0 09     BEQ #D35C
+D353  A8        TAY
+D354  A9 20     LDA @#20
+D356  20 4C CA  JSR #CA4C
+D359  88        DEY
+D35A  D0 FA     BNE #D356
+D35C  A0 00     LDY @#0
+D35E  B1 52     LDA (#52),Y
+D360  C9 0D     CMP @#D
+D362  F0 CD     BEQ #D331
+D364  20 4C CA  JSR #CA4C
+D367  C8        INY
+D368  D0 F4     BNE #D35E
+
+
+  Execute the Command 'FINPUT'
+  ----------------------------
+
+D36A  20 72 C3  JSR #C372
+D36D  B1 05     LDA (#5),Y
+D36F  C9 25     CMP @#25
+D371  D0 08     BNE #D37B
+D373  C8        INY
+D374  84 03     STY #3
+D376  20 44 D4  JSR #D444
+D379  B0 05     BCS #D380
+D37B  A2 C3     LDX @#C3
+D37D  4C 0B D1  JMP #D10B
+
+D380  20 09 CD  JSR #CD09
+D383  A8        TAY
+D384  A5 05     LDA #5
+D386  48        PHA
+D387  A5 06     LDA #6
+D389  48        PHA
+D38A  A5 03     LDA #3
+D38C  48        PHA
+D38D  84 03     STY #3
+D38F  C8        INY
+D390  84 06     STY #6
+D392  A9 40     LDA @#40
+D394  85 05     STA #5
+D396  20 FC D0  JSR #D0FC
+D399  68        PLA
+D39A  85 03     STA #3
+D39C  68        PLA
+D39D  85 06     STA #6
+D39F  68        PLA
+D3A0  85 05     STA #5
+D3A2  20 36 D8  JSR #D836
+D3A5  4C 7B D3  JMP #D37B
+
+
+  Execute the Command 'FIF'
+  -------------------------
+
+D3A8  20 EB D9  JSR #D9EB
+D3AB  4C 69 C5  JMP #C569
+
+
+  Execute the Command 'FUNTIL'
+  ----------------------------
+
+D3AE  20 EB D9  JSR #D9EB
+D3B1  4C D5 CC  JMP #CCD5
+ÿ
+
+  Execute the Command 'FPUT'
+  --------------------------
+
+D3B4  20 94 D4  JSR #D494
+D3B7  20 FC D0  JSR #D0FC
+D3BA  20 E4 C4  JSR #C4E4
+D3BD  20 31 D8  JSR #D831
+D3C0  A6 04     LDX #4
+D3C2  20 41 CF  JSR #CF41
+D3C5  A2 04     LDX @#4
+D3C7  BD C5 03  LDA #3C5,X
+D3CA  20 D1 FF  JSR #FFD1
+D3CD  CA        DEX
+D3CE  10 F7     BPL #D3C7
+D3D0  4C 5B C5  JMP #C55B
+
+
+  Execute the Command 'FDIM'
+  --------------------------
+
+D3D3  A5 01     LDA #1
+D3D5  05 02     ORA #2
+D3D7  F0 6A     BEQ #D443
+D3D9  20 34 C4  JSR #C434
+D3DC  B0 65     BCS #D443
+D3DE  A4 03     LDY #3
+D3E0  B1 05     LDA (#5),Y
+D3E2  C9 25     CMP @#25
+D3E4  D0 5D     BNE #D443
+D3E6  C8        INY
+D3E7  B1 05     LDA (#5),Y
+D3E9  C8        INY
+D3EA  D1 05     CMP (#5),Y
+D3EC  D0 55     BNE #D443
+D3EE  C9 5B     CMP @#5B
+D3F0  B0 51     BCS #D443
+D3F2  E9 3F     SBC @#3F
+D3F4  90 4D     BCC #D443
+D3F6  C8        INY
+D3F7  84 03     STY #3
+D3F9  48        PHA
+D3FA  20 8B C7  JSR #C78B
+D3FD  F6 15     INC #15,X
+D3FF  D0 02     BNE #D403
+D401  F6 24     INC #24,X
+D403  20 9A D4  JSR #D49A
+D406  68        PLA
+D407  A8        TAY
+D408  18        CLC
+D409  A5 23     LDA #23
+D40B  99 87 28  STA #2887,Y
+D40E  65 16     ADC #16
+D410  85 23     STA #23
+D412  A5 24     LDA #24
+D414  99 A2 28  STA #28A2,Y
+D417  65 25     ADC #25
+D419  85 24     STA #24
+D41B  A0 00     LDY @#0
+D41D  84 04     STY #4
+D41F  A9 AA     LDA @#AA
+D421  91 23     STA (#23),Y
+D423  D1 23     CMP (#23),Y
+D425  D0 1C     BNE #D443
+D427  4A        LSR A
+D428  91 23     STA (#23),Y
+D42A  D1 23     CMP (#23),Y
+D42C  D0 15     BNE #D443
+D42E  20 34 C4  JSR #C434
+D431  B0 10     BCS #D443
+D433  A4 03     LDY #3
+D435  B1 05     LDA (#5),Y
+D437  C9 2C     CMP @#2C
+D439  D0 05     BNE #D440
+D43B  E6 03     INC #3
+D43D  4C D3 D3  JMP #D3D3
+D440  4C 58 C5  JMP #C558
+D443  00        BRK
+
+
+  ???
+  ---
+
+D444  20 34 C4  JSR #C434
+D447  90 0E     BCC #D457
+D449  B5 15     LDA #15,X
+D44B  0A        ASL A
+D44C  0A        ASL A
+D44D  75 15     ADC #15,X
+D44F  95 15     STA #15,X
+D451  A9 28     LDA @#28
+D453  95 24     STA #24,X
+D455  38        SEC
+D456  60        RTS
+D457  A4 03     LDY #3
+D459  B1 05     LDA (#5),Y
+D45B  C9 21     CMP @#21
+D45D  D0 07     BNE #D466
+D45F  E6 03     INC #3
+D461  20 BC C8  JSR #C8BC
+D464  38        SEC
+D465  60        RTS
+D466  C8        INY
+D467  D1 05     CMP (#5),Y
+D469  D0 08     BNE #D473
+D46B  C9 5B     CMP @#5B
+D46D  B0 04     BCS #D473
+D46F  E9 3F     SBC @#3F
+D471  B0 02     BCS #D475
+D473  18        CLC
+D474  60        RTS
+D475  C8        INY
+D476  84 03     STY #3
+D478  48        PHA
+D479  20 BC C8  JSR #C8BC
+D47C  20 9A D4  JSR #D49A
+D47F  68        PLA
+D480  A8        TAY
+D481  B0 10     BCS #D493
+D483  B9 87 28  LDA #2887,Y
+D486  75 15     ADC #15,X
+D488  95 15     STA #15,X
+D48A  B9 A2 28  LDA #28A2,Y
+D48D  75 24     ADC #24,X
+D48F  95 24     STA #24,X
+D491  90 D1     BCC #D464
+D493  00        BRK
+
+
+  ???
+  ---
+
+D494  20 BC C8  JSR #C8BC
+D497  4C 31 C2  JMP #C231
+
+
+  ??? subroutine
+  --------------
+
+D49A  B4 24     LDY #24,X
+D49C  B5 15     LDA #15,X
+D49E  0A        ASL A
+D49F  36 24     ROL #24,X
+D4A1  0A        ASL A
+D4A2  36 24     ROL #24,X
+D4A4  18        CLC
+D4A5  75 15     ADC #15,X
+D4A7  95 15     STA #15,X
+D4A9  98        TYA
+D4AA  75 24     ADC #24,X
+D4AC  95 24     STA #24,X
+D4AE  60        RTS
+
+
+  Pass Control to Utility Interpreter, if it Exists
+  -------------------------------------------------
+
+  Floating pointing interpreter jumps here if a match cannot be made
+  against the #D006 command table.
+
+  If ?#A000=#40 and ?#A001=#BF then control is passed to the Utility
+  interpreter at #A002.
+
+D4AF  AD 00 A0  LDA #A000       Get the first byte of the utility ROM
+D4B2  C9 40     CMP @#40        Does it match the test byte ?
+D4B4  D0 0A     BNE #D4C0       ..no, do interpreter post test, which
+                                will fail and so execute BRK
+D4B6  AD 01 A0  LDA #A001       Get the second byte of the utility ROM
+D4B9  C9 BF     CMP @#BF        Does it match the test byte ?
+D4BB  D0 03     BNE #D4C0       ..no, do interpreter post test, which
+                                will fail and so execute BRK
+D4BD  4C 02 A0  JMP #A002       ..yes, transfer control to the utility
+D4C0  4C 58 C5  JMP #C558       Do interpreter post test
+
+
+  ??? subroutine
+  --------------
+
+D4C3  C9 3A     CMP @#3A
+D4C5  B0 07     BCS #D4CE
+D4C7  C9 30     CMP @#30
+D4C9  90 02     BCC #D4CD
+D4CB  E9 30     SBC @#30
+D4CD  60        RTS
+
+D4CE  18        CLC
+D4CF  60        RTS
+
+
+  ??? subroutine
+  --------------
+
+D4D0  A9 00     LDA @#0
+D4D2  85 6F     STA #6F
+D4D4  20 86 D6  JSR #D686
+D4D7  D0 12     BNE #D4EB
+D4D9  A9 30     LDA @#30
+D4DB  20 8D D5  JSR #D58D
+D4DE  A9 2E     LDA @#2E
+D4E0  20 8D D5  JSR #D58D
+D4E3  A9 30     LDA @#30
+D4E5  20 8D D5  JSR #D58D
+D4E8  4C 71 D5  JMP #D571
+
+D4EB  10 05     BPL #D4F2
+D4ED  A9 2D     LDA @#2D
+D4EF  20 8D D5  JSR #D58D
+D4F2  A9 00     LDA @#0
+D4F4  85 6D     STA #6D
+D4F6  A5 59     LDA #59
+D4F8  C9 81     CMP @#81
+D4FA  B0 08     BCS #D504
+D4FC  20 A0 D6  JSR #D6A0
+D4FF  C6 6D     DEC #6D
+D501  4C F6 D4  JMP #D4F6
+
+D504  C9 84     CMP @#84
+D506  90 10     BCC #D518
+D508  D0 06     BNE #D510
+D50A  A5 5A     LDA #5A
+D50C  C9 A0     CMP @#A0
+D50E  90 08     BCC #D518
+D510  20 1B D7  JSR #D71B
+D513  E6 6D     INC #6D
+D515  4C F6 D4  JMP #D4F6
+
+D518  A5 59     LDA #59
+D51A  C9 84     CMP @#84
+D51C  B0 07     BCS #D525
+D51E  20 D8 D6  JSR #D6D8
+D521  E6 59     INC #59
+D523  D0 F3     BNE #D518
+D525  38        SEC
+D526  A9 FF     LDA @#FF
+D528  20 36 D6  JSR #D636
+D52B  A5 5A     LDA #5A
+D52D  C9 A0     CMP @#A0
+D52F  B0 DF     BCS #D510
+D531  A9 01     LDA @#1
+D533  A4 6D     LDY #6D
+D535  30 0A     BMI #D541
+D537  C0 08     CPY @#8
+D539  B0 06     BCS #D541
+D53B  C8        INY
+D53C  A9 00     LDA @#0
+D53E  85 6D     STA #6D
+D540  98        TYA
+D541  85 70     STA #70
+D543  A2 09     LDX @#9
+D545  86 54     STX #54
+D547  20 75 D5  JSR #D575
+D54A  C6 70     DEC #70
+D54C  D0 05     BNE #D553
+D54E  A9 2E     LDA @#2E
+D550  20 8D D5  JSR #D58D
+D553  C6 54     DEC #54
+D555  D0 F0     BNE #D547
+D557  A5 6D     LDA #6D
+D559  F0 16     BEQ #D571
+D55B  A9 45     LDA @#45
+D55D  20 8D D5  JSR #D58D
+D560  A5 6D     LDA #6D
+D562  10 0A     BPL #D56E
+D564  A9 2D     LDA @#2D
+D566  20 8D D5  JSR #D58D
+D569  38        SEC
+D56A  A9 00     LDA @#0
+D56C  E5 6D     SBC #6D
+D56E  20 87 D5  JSR #D587
+D571  A9 0D     LDA @#D
+D573  D0 18     BNE #D58D
+D575  A5 5A     LDA #5A
+D577  4A        LSR A
+D578  4A        LSR A
+D579  4A        LSR A
+D57A  4A        LSR A
+D57B  20 8B D5  JSR #D58B
+D57E  A5 5A     LDA #5A
+D580  29 0F     AND @#F
+D582  85 5A     STA #5A
+D584  4C 4E D6  JMP #D64E
+
+
+  ??? subroutine
+  --------------
+
+D587  C9 0A     CMP @#A
+D589  B0 09     BCS #D594
+D58B  09 30     ORA @#30
+D58D  A4 6F     LDY #6F
+D58F  91 52     STA (#52),Y
+D591  E6 6F     INC #6F
+D593  60        RTS
+
+
+??? subroutine
+--------------
+
+D594  A2 FF     LDX @#FF
+D596  E8        INX
+D597  E9 0A     SBC @#A
+D599  B0 FB     BCS #D596
+D59B  69 0A     ADC @#A
+D59D  48        PHA
+D59E  8A        TXA
+D59F  20 87 D5  JSR #D587
+D5A2  68        PLA
+D5A3  10 E6     BPL #D58B
+D5A5  A5 03     LDA #3
+D5A7  85 54     STA #54
+D5A9  A5 05     LDA #5
+D5AB  85 52     STA #52
+D5AD  A5 06     LDA #6
+D5AF  85 53     STA #53
+D5B1  20 A4 DA  JSR #DAA4
+D5B4  85 6C     STA #6C
+D5B6  85 6D     STA #6D
+D5B8  20 7B D6  JSR #D67B
+D5BB  C9 2E     CMP @#2E
+D5BD  F0 0E     BEQ #D5CD
+D5BF  20 C3 D4  JSR #D4C3
+D5C2  90 71     BCC #D635
+D5C4  85 5E     STA #5E
+D5C6  20 7B D6  JSR #D67B
+D5C9  C9 2E     CMP @#2E
+D5CB  D0 09     BNE #D5D6
+D5CD  A5 6C     LDA #6C
+D5CF  18        CLC
+D5D0  D0 3A     BNE #D60C
+D5D2  E6 6C     INC #6C
+D5D4  D0 F0     BNE #D5C6
+D5D6  C9 45     CMP @#45
+D5D8  F0 27     BEQ #D601
+D5DA  20 C3 D4  JSR #D4C3
+D5DD  90 2D     BCC #D60C
+D5DF  85 6E     STA #6E
+D5E1  A5 5A     LDA #5A
+D5E3  C9 18     CMP @#18
+D5E5  90 08     BCC #D5EF
+D5E7  A5 6C     LDA #6C
+D5E9  D0 DB     BNE #D5C6
+D5EB  E6 6D     INC #6D
+D5ED  B0 D7     BCS #D5C6
+D5EF  A5 6C     LDA #6C
+D5F1  F0 02     BEQ #D5F5
+D5F3  C6 6D     DEC #6D
+D5F5  20 4E D6  JSR #D64E
+D5F8  18        CLC
+D5F9  A5 6E     LDA #6E
+D5FB  20 36 D6  JSR #D636
+D5FE  4C C6 D5  JMP #D5C6
+
+D601  20 7B D6  JSR #D67B
+D604  20 78 D7  JSR #D778
+D607  18        CLC
+D608  65 6D     ADC #6D
+D60A  85 6D     STA #6D
+D60C  A9 A8     LDA @#A8
+D60E  85 59     STA #59
+D610  20 86 D6  JSR #D686
+D613  F0 1C     BEQ #D631
+D615  20 C8 D7  JSR #D7C8
+D618  A5 6D     LDA #6D
+D61A  30 0B     BMI #D627
+D61C  F0 10     BEQ #D62E
+D61E  20 A0 D6  JSR #D6A0
+D621  C6 6D     DEC #6D
+D623  D0 F9     BNE #D61E
+D625  F0 07     BEQ #D62E
+D627  20 1B D7  JSR #D71B
+D62A  E6 6D     INC #6D
+D62C  D0 F9     BNE #D627
+D62E  20 9B DA  JSR #DA9B
+D631  38        SEC
+D632  A4 54     LDY #54
+D634  88        DEY
+D635  60        RTS
+
+
+  ??? subroutine
+  --------------
+
+D636  A2 05     LDX @#5
+D638  75 59     ADC #59,X
+D63A  95 59     STA #59,X
+D63C  A9 00     LDA @#0
+D63E  CA        DEX
+D63F  D0 F7     BNE #D638
+D641  60        RTS
+
+
+  ??? subroutine
+  --------------
+
+D642  A2 05     LDX @#5
+D644  B5 59     LDA #59,X
+D646  75 61     ADC #61,X
+D648  95 59     STA #59,X
+D64A  CA        DEX
+D64B  D0 F7     BNE #D644
+D64D  60        RTS
+
+
+  ??? subroutine
+  --------------
+
+D64E  A2 05     LDX @#5
+D650  A9 00     LDA @#0
+D652  85 67     STA #67
+D654  A9 00     LDA @#0
+D656  85 68     STA #68
+D658  B5 59     LDA #59,X
+D65A  0A        ASL A
+D65B  26 68     ROL #68
+D65D  0A        ASL A
+D65E  26 68     ROL #68
+D660  18        CLC
+D661  75 59     ADC #59,X
+D663  90 02     BCC #D667
+D665  E6 68     INC #68
+D667  0A        ASL A
+D668  26 68     ROL #68
+D66A  18        CLC
+D66B  65 67     ADC #67
+D66D  90 02     BCC #D671
+D66F  E6 68     INC #68
+D671  95 59     STA #59,X
+D673  A5 68     LDA #68
+D675  85 67     STA #67
+D677  CA        DEX
+D678  D0 DA     BNE #D654
+D67A  60        RTS
+
+
+  ??? subroutine
+  --------------
+
+D67B  84 55     STY #55
+D67D  A4 54     LDY #54
+D67F  B1 52     LDA (#52),Y
+D681  A4 55     LDY #55
+D683  E6 54     INC #54
+D685  60        RTS
+
+
+  ??? subroutine
+  --------------
+
+D686  A5 5A     LDA #5A
+D688  05 5B     ORA #5B
+D68A  05 5C     ORA #5C
+D68C  05 5D     ORA #5D
+D68E  05 5E     ORA #5E
+D690  F0 07     BEQ #D699
+D692  A5 57     LDA #57
+D694  D0 09     BNE #D69F
+D696  A9 01     LDA @#1
+D698  60        RTS
+
+D699  85 57     STA #57
+D69B  85 59     STA #59
+D69D  85 58     STA #58
+D69F  60        RTS
+
+
+  ??? subroutine
+  --------------
+
+D6A0  18        CLC
+D6A1  A5 59     LDA #59
+D6A3  69 03     ADC @#3
+D6A5  85 59     STA #59
+D6A7  90 02     BCC #D6AB
+D6A9  E6 58     INC #58
+D6AB  20 C3 D6  JSR #D6C3
+D6AE  20 FB D6  JSR #D6FB
+D6B1  20 FB D6  JSR #D6FB
+D6B4  20 42 D6  JSR #D642
+D6B7  90 09     BCC #D6C2
+D6B9  20 D8 D6  JSR #D6D8
+D6BC  E6 59     INC #59
+D6BE  D0 02     BNE #D6C2
+D6C0  E6 58     INC #58
+D6C2  60        RTS
+
+
+  Copy the 8 bytes #57..#5E to #5F..66 subroutine
+  -----------------------------------------------
+
+D6C3  A2 08     LDX @#8
+D6C5  B5 56     LDA #56,X
+D6C7  95 5E     STA #5E,X
+D6C9  CA        DEX
+D6CA  D0 F9     BNE #D6C5
+D6CC  60        RTS
+
+
+  Shift Left 1 Bit #5E..#5A subroutine
+  ------------------------------------
+
+D6CD  06 5E     ASL #5E
+D6CF  26 5D     ROL #5D
+D6D1  26 5C     ROL #5C
+D6D3  26 5B     ROL #5B
+D6D5  26 5A     ROL #5A
+D6D7  60        RTS
+
+
+  Shift Right 1 Bit #5A..#5E subroutine
+  -------------------------------------
+
+D6D8  66 5A     ROR #5A
+D6DA  66 5B     ROR #5B
+D6DC  66 5C     ROR #5C
+D6DE  66 5D     ROR #5D
+D6E0  66 5E     ROR #5E
+D6E2  60        RTS
+
+
+  Copy #5A..#5D to #5B..#5E and clear #5A subroutine
+  --------------------------------------------------
+
+D6E3  A5 5D     LDA #5D
+D6E5  85 5E     STA #5E
+D6E7  A5 5C     LDA #5C
+D6E9  85 5D     STA #5D
+D6EB  A5 5B     LDA #5B
+D6ED  85 5C     STA #5C
+D6EF  A5 5A     LDA #5A
+D6F1  85 5B     STA #5B
+D6F3  A9 00     LDA @#0
+D6F5  85 5A     STA #5A
+D6F7  60        RTS
+
+
+D6F8  20 C3 D6  JSR #D6C3
+D6FB  46 62     LSR #62
+D6FD  66 63     ROR #63
+D6FF  66 64     ROR #64
+D701  66 65     ROR #65
+D703  66 66     ROR #66
+D705  60        RTS
+
+
+  Copy #62..#65 to #63..#66 and clear #62 subroutine
+  --------------------------------------------------
+
+D706  A5 65     LDA #65
+D708  85 66     STA #66
+D70A  A5 64     LDA #64
+D70C  85 65     STA #65
+D70E  A5 63     LDA #63
+D710  85 64     STA #64
+D712  A5 62     LDA #62
+D714  85 63     STA #63
+D716  A9 00     LDA @#0
+D718  85 62     STA #62
+D71A  60        RTS
+
+
+  ??? subroutine
+  --------------
+
+D71B  38        SEC
+D71C  A5 59     LDA #59
+D71E  E9 04     SBC @#4
+D720  85 59     STA #59
+D722  B0 02     BCS #D726
+D724  C6 58     DEC #58
+D726  20 F8 D6  JSR #D6F8
+D729  20 B4 D6  JSR #D6B4
+D72C  20 F8 D6  JSR #D6F8
+D72F  20 FB D6  JSR #D6FB
+D732  20 FB D6  JSR #D6FB
+D735  20 FB D6  JSR #D6FB
+D738  20 B4 D6  JSR #D6B4
+D73B  A9 00     LDA @#0
+D73D  85 62     STA #62
+D73F  A5 5A     LDA #5A
+D741  85 63     STA #63
+D743  A5 5B     LDA #5B
+D745  85 64     STA #64
+D747  A5 5C     LDA #5C
+D749  85 65     STA #65
+D74B  A5 5D     LDA #5D
+D74D  85 66     STA #66
+D74F  A5 5E     LDA #5E
+D751  2A        ROL A
+D752  20 B4 D6  JSR #D6B4
+D755  A9 00     LDA @#0
+D757  85 62     STA #62
+D759  85 63     STA #63
+D75B  A5 5A     LDA #5A
+D75D  85 64     STA #64
+D75F  A5 5B     LDA #5B
+D761  85 65     STA #65
+D763  A5 5C     LDA #5C
+D765  85 66     STA #66
+D767  A5 5D     LDA #5D
+D769  2A        ROL A
+D76A  20 B4 D6  JSR #D6B4
+D76D  A5 5B     LDA #5B
+D76F  2A        ROL A
+D770  A5 5A     LDA #5A
+D772  20 36 D6  JSR #D636
+D775  4C B7 D6  JMP #D6B7
+
+
+  ??? subroutine
+  --------------
+
+D778  A0 FF     LDY @#FF
+D77A  C9 2B     CMP @#2B
+D77C  F0 05     BEQ #D783
+D77E  C9 2D     CMP @#2D
+D780  D0 04     BNE #D786
+D782  C8        INY
+D783  20 7B D6  JSR #D67B
+D786  20 C3 D4  JSR #D4C3
+D789  90 24     BCC #D7AF
+D78B  AA        TAX
+D78C  20 7B D6  JSR #D67B
+D78F  20 C3 D4  JSR #D4C3
+D792  90 10     BCC #D7A4
+D794  85 6E     STA #6E
+D796  20 7B D6  JSR #D67B
+D799  8A        TXA
+D79A  85 67     STA #67
+D79C  0A        ASL A
+D79D  0A        ASL A
+D79E  65 67     ADC #67
+D7A0  0A        ASL A
+D7A1  65 6E     ADC #6E
+D7A3  AA        TAX
+D7A4  98        TYA
+D7A5  D0 06     BNE #D7AD
+D7A7  86 6E     STX #6E
+D7A9  38        SEC
+D7AA  E5 6E     SBC #6E
+D7AC  60        RTS
+
+D7AD  8A        TXA
+D7AE  60        RTS
+
+D7AF  A9 00     LDA @#0
+D7B1  60        RTS
+
+
+  ??? subroutine
+  --------------
+
+D7B2  48        PHA
+D7B3  20 A4 DA  JSR #DAA4
+D7B6  68        PLA
+D7B7  F0 F8     BEQ #D7B1
+D7B9  10 07     BPL #D7C2
+D7BB  85 57     STA #57
+D7BD  A9 00     LDA @#0
+D7BF  38        SEC
+D7C0  E5 57     SBC #57
+D7C2  85 5A     STA #5A
+D7C4  A9 88     LDA @#88
+D7C6  85 59     STA #59
+D7C8  20 86 D6  JSR #D686
+D7CB  F0 E4     BEQ #D7B1
+D7CD  A5 5A     LDA #5A
+D7CF  D0 21     BNE #D7F2
+D7D1  A5 5B     LDA #5B
+D7D3  85 5A     STA #5A
+D7D5  A5 5C     LDA #5C
+D7D7  85 5B     STA #5B
+D7D9  A5 5D     LDA #5D
+D7DB  85 5C     STA #5C
+D7DD  A5 5E     LDA #5E
+D7DF  85 5D     STA #5D
+D7E1  A9 00     LDA @#0
+D7E3  85 5E     STA #5E
+D7E5  38        SEC
+D7E6  A5 59     LDA #59
+D7E8  E9 08     SBC @#8
+D7EA  85 59     STA #59
+D7EC  B0 DF     BCS #D7CD
+D7EE  C6 58     DEC #58
+D7F0  90 DB     BCC #D7CD
+D7F2  A5 5A     LDA #5A
+D7F4  30 BB     BMI #D7B1
+D7F6  20 CD D6  JSR #D6CD
+D7F9  A5 59     LDA #59
+D7FB  D0 02     BNE #D7FF
+D7FD  C6 58     DEC #58
+D7FF  C6 59     DEC #59
+D801  4C F2 D7  JMP #D7F2
+
+
+  ??? subroutine
+  --------------
+
+D804  A0 04     LDY @#4
+D806  A9 00     LDA @#0
+D808  85 66     STA #66
+D80A  85 60     STA #60
+D80C  85 5F     STA #5F
+D80E  B1 6F     LDA (#6F),Y
+D810  99 61 00  STA #61,Y
+D813  05 5F     ORA #5F
+D815  85 5F     STA #5F
+D817  88        DEY
+D818  10 F4     BPL #D80E
+D81A  AA        TAX
+D81B  F0 09     BEQ #D826
+D81D  A5 62     LDA #62
+D81F  85 5F     STA #5F
+D821  09 80     ORA @#80
+D823  85 62     STA #62
+D825  8A        TXA
+D826  60        RTS
+ÿ
+
+  ??? subroutine
+  --------------
+
+D827  20 A2 DB  JSR #DBA2
+D82A  D0 11     BNE #D83D
+D82C  20 A6 DB  JSR #DBA6
+D82F  D0 0C     BNE #D83D
+D831  20 AA DB  JSR #DBAA
+D834  D0 07     BNE #D83D
+D836  A6 04     LDX #4
+D838  A0 6F     LDY @#6F
+D83A  20 CD C3  JSR #C3CD
+D83D  A0 00     LDY @#0
+D83F  A5 59     LDA #59
+D841  91 6F     STA (#6F),Y
+D843  C8        INY
+D844  A5 57     LDA #57
+D846  29 80     AND @#80
+D848  85 57     STA #57
+D84A  A5 5A     LDA #5A
+D84C  29 7F     AND @#7F
+D84E  05 57     ORA #57
+D850  91 6F     STA (#6F),Y
+D852  C8        INY
+D853  B9 59 00  LDA #59,Y
+D856  91 6F     STA (#6F),Y
+D858  C0 04     CPY @#4
+D85A  D0 F6     BNE #D852
+D85C  60        RTS
+
+
+  ??? subroutine
+  --------------
+
+D85D  A0 52     LDY @#52
+D85F  84 6F     STY #6F
+D861  A9 00     LDA @#0
+D863  85 70     STA #70
+D865  20 3D D8  JSR #D83D
+D868  20 D9 C4  JSR #C4D9
+D86B  A5 56     LDA #56
+D86D  95 73     STA #73,X
+D86F  60        RTS
+
+
+  ??? subroutine
+  --------------
+
+D870  A6 04     LDX #4
+D872  20 CB C3  JSR #C3CB
+D875  B5 74     LDA #74,X
+D877  85 56     STA #56
+D879  84 6F     STY #6F
+D87B  A9 00     LDA @#0
+D87D  85 70     STA #70
+D87F  60        RTS
+
+
+  ??? subroutine
+  --------------
+
+D880  A5 5E     LDA #5E
+D882  C9 80     CMP @#80
+D884  90 07     BCC #D88D
+D886  F0 0A     BEQ #D892
+D888  A9 FF     LDA @#FF
+D88A  20 72 D7  JSR #D772
+D88D  A9 00     LDA @#0
+D88F  85 5E     STA #5E
+D891  60        RTS
+
+
+  ??? subroutine
+  --------------
+
+D892  A5 5D     LDA #5D
+D894  09 01     ORA @#1
+D896  85 5D     STA #5D
+D898  D0 F3     BNE #D88D
+D89A  20 C7 D8  JSR #D8C7
+D89D  F0 06     BEQ #D8A5
+D89F  A5 59     LDA #59
+D8A1  C9 A0     CMP @#A0
+D8A3  B0 14     BCS #D8B9
+D8A5  46 5A     LSR #5A
+D8A7  66 5B     ROR #5B
+D8A9  66 5C     ROR #5C
+D8AB  66 5D     ROR #5D
+D8AD  66 62     ROR #62
+D8AF  66 63     ROR #63
+D8B1  66 64     ROR #64
+D8B3  66 65     ROR #65
+D8B5  E6 59     INC #59
+D8B7  D0 E6     BNE #D89F
+D8B9  F0 16     BEQ #D8D1
+
+
+  ??? subroutine
+  --------------
+
+D8BB  A9 7F     LDA @#7F
+D8BD  85 5A     STA #5A
+D8BF  A9 FF     LDA @#FF
+D8C1  85 5B     STA #5B
+D8C3  85 5C     STA #5C
+D8C5  85 5D     STA #5D
+D8C7  A2 08     LDX @#8
+D8C9  A9 00     LDA @#0
+D8CB  95 5F     STA #5F,X
+D8CD  CA        DEX
+D8CE  D0 FB     BNE #D8CB
+D8D0  60        RTS
+
+
+  ??? subroutine
+  --------------
+
+D8D1  A5 57     LDA #57
+D8D3  10 0C     BPL #D8E1
+D8D5  38        SEC
+D8D6  A2 04     LDX @#4
+D8D8  A9 00     LDA @#0
+D8DA  F5 59     SBC #59,X
+D8DC  95 59     STA #59,X
+D8DE  CA        DEX
+D8DF  D0 F7     BNE #D8D8
+D8E1  60        RTS
+
+
+  ??? subroutine
+  --------------
+
+D8E2  A5 62     LDA #62
+D8E4  10 23     BPL #D909
+D8E6  A2 04     LDX @#4
+D8E8  A9 00     LDA @#0
+D8EA  F5 61     SBC #61,X
+D8EC  95 61     STA #61,X
+D8EE  CA        DEX
+D8EF  D0 F7     BNE #D8E8
+D8F1  A5 57     LDA #57
+D8F3  49 80     EOR @#80
+D8F5  85 57     STA #57
+D8F7  10 11     BPL #D90A
+D8F9  E6 5D     INC #5D
+D8FB  D0 0C     BNE #D909
+D8FD  E6 5C     INC #5C
+D8FF  D0 08     BNE #D909
+D901  E6 5B     INC #5B
+D903  D0 04     BNE #D909
+D905  E6 5A     INC #5A
+D907  F0 B2     BEQ #D8BB
+D909  60        RTS
+
+D90A  20 D5 D8  JSR #D8D5
+D90D  20 F9 D8  JSR #D8F9
+D910  4C D5 D8  JMP #D8D5
+
+
+  ??? subroutine
+  --------------
+
+D913  A2 05     LDX @#5
+D915  B5 61     LDA #61,X
+D917  95 59     STA #59,X
+D919  CA        DEX
+D91A  D0 F9     BNE #D915
+D91C  A9 80     LDA @#80
+D91E  85 59     STA #59
+D920  4C C8 D7  JMP #D7C8
+
+
+  ??? subroutine
+  --------------
+
+D923  20 04 D8  JSR #D804
+D926  20 3D D8  JSR #D83D
+D929  A2 08     LDX @#8
+D92B  B5 5E     LDA #5E,X
+D92D  95 56     STA #56,X
+D92F  CA        DEX
+D930  D0 F9     BNE #D92B
+D932  60        RTS
+
+
+  ???
+  ---
+
+D933  20 39 D9  JSR #D939
+D936  4C BF D1  JMP #D1BF
+
+
+  ???
+  ---
+
+D939  20 BF D1  JSR #D1BF
+D93C  20 04 D8  JSR #D804
+D93F  F0 F1     BEQ #D932
+D941  20 86 D6  JSR #D686
+D944  F0 E3     BEQ #D929
+D946  A5 59     LDA #59
+D948  C5 61     CMP #61
+D94A  F0 26     BEQ #D972
+D94C  90 0F     BCC #D95D
+D94E  E5 61     SBC #61
+D950  C9 21     CMP @#21
+D952  B0 DE     BCS #D932
+D954  AA        TAX
+D955  20 FB D6  JSR #D6FB
+D958  CA        DEX
+D959  D0 FA     BNE #D955
+D95B  F0 15     BEQ #D972
+
+D95D  38        SEC
+D95E  A5 61     LDA #61
+D960  E5 59     SBC #59
+D962  C9 21     CMP @#21
+D964  B0 C3     BCS #D929
+D966  AA        TAX
+D967  18        CLC
+D968  20 D8 D6  JSR #D6D8
+D96B  CA        DEX
+D96C  D0 F9     BNE #D967
+D96E  A5 61     LDA #61
+D970  85 59     STA #59
+D972  A5 57     LDA #57
+D974  45 5F     EOR #5F
+D976  10 49     BPL #D9C1
+D978  A5 5A     LDA #5A
+D97A  C5 62     CMP #62
+D97C  D0 1B     BNE #D999
+D97E  A5 5B     LDA #5B
+D980  C5 63     CMP #63
+D982  D0 15     BNE #D999
+D984  A5 5C     LDA #5C
+D986  C5 64     CMP #64
+D988  D0 0F     BNE #D999
+D98A  A5 5D     LDA #5D
+D98C  C5 65     CMP #65
+D98E  D0 09     BNE #D999
+D990  A5 5E     LDA #5E
+D992  C5 66     CMP #66
+D994  D0 03     BNE #D999
+D996  4C A4 DA  JMP #DAA4
+
+D999  B0 2D     BCS #D9C8
+D99B  38        SEC
+D99C  A5 66     LDA #66
+D99E  E5 5E     SBC #5E
+D9A0  85 5E     STA #5E
+D9A2  A5 65     LDA #65
+D9A4  E5 5D     SBC #5D
+D9A6  85 5D     STA #5D
+D9A8  A5 64     LDA #64
+D9AA  E5 5C     SBC #5C
+D9AC  85 5C     STA #5C
+D9AE  A5 63     LDA #63
+D9B0  E5 5B     SBC #5B
+D9B2  85 5B     STA #5B
+D9B4  A5 62     LDA #62
+D9B6  E5 5A     SBC #5A
+D9B8  85 5A     STA #5A
+D9BA  A5 5F     LDA #5F
+D9BC  85 57     STA #57
+D9BE  4C 98 DA  JMP #DA98
+
+D9C1  18        CLC
+D9C2  20 B4 D6  JSR #D6B4
+D9C5  4C 9B DA  JMP #DA9B
+
+D9C8  38        SEC
+D9C9  A5 5E     LDA #5E
+D9CB  E5 66     SBC #66
+D9CD  85 5E     STA #5E
+D9CF  A5 5D     LDA #5D
+D9D1  E5 65     SBC #65
+D9D3  85 5D     STA #5D
+D9D5  A5 5C     LDA #5C
+D9D7  E5 64     SBC #64
+D9D9  85 5C     STA #5C
+D9DB  A5 5B     LDA #5B
+D9DD  E5 63     SBC #63
+D9DF  85 5B     STA #5B
+D9E1  A5 5A     LDA #5A
+D9E3  E5 62     SBC #62
+D9E5  85 5A     STA #5A
+D9E7  4C 98 DA  JMP #DA98
+
+D9EA  00        BRK
+
+  ???
+  ---
+
+D9EB  20 FC D0  JSR #D0FC
+D9EE  A9 C7     LDA @#C7
+D9F0  48        PHA
+D9F1  A2 C8     LDX @#C8
+D9F3  4C 0B D1  JMP #D10B
+
+
+  Execute the conditional test '='
+  --------------------------------
+
+D9F6  A9 5D     LDA @#5D
+D9F8  D0 12     BNE #DA0C
+
+
+  Execute the conditional test '<='
+  ---------------------------------
+
+D9FA  A9 66     LDA @#66
+D9FC  D0 0E     BNE #DA0C
+
+
+  Execute the conditional test '<>'
+  ---------------------------------
+
+D9FE  A9 6F     LDA @#6F
+DA00  D0 0A     BNE #DA0C
+
+
+  Execute the conditional test '<'
+  --------------------------------
+
+DA02  A9 76     LDA @#76
+DA04  D0 06     BNE #DA0C
+
+
+  Execute the conditional test '>='
+  ---------------------------------
+
+DA06  A9 7D     LDA @#7D
+DA08  D0 02     BNE #DA0C
+
+
+  Execute the conditional test '>'
+  --------------------------------
+
+DA0A  A9 84     LDA @#84
+DA0C  48        PHA
+DA0D  20 5D D8  JSR #D85D
+DA10  20 FC D0  JSR #D0FC
+DA13  20 70 D8  JSR #D870
+DA16  E6 04     INC #4
+DA18  20 04 D8  JSR #D804
+DA1B  A5 5F     LDA #5F
+DA1D  29 80     AND @#80
+DA1F  85 5F     STA #5F
+DA21  A0 00     LDY @#0
+DA23  A5 57     LDA #57
+DA25  29 80     AND @#80
+DA27  C5 5F     CMP #5F
+DA29  D0 0D     BNE #DA38
+DA2B  A2 00     LDX @#0
+DA2D  B5 61     LDA #61,X
+DA2F  D5 59     CMP #59,X
+DA31  D0 0A     BNE #DA3D
+DA33  E8        INX
+DA34  E0 05     CPX @#5
+DA36  D0 F5     BNE #DA2D
+DA38  08        PHP
+DA39  A6 04     LDX #4
+DA3B  28        PLP
+DA3C  60        RTS
+
+DA3D  6A        ROR A
+DA3E  45 5F     EOR #5F
+DA40  2A        ROL A
+DA41  A9 01     LDA @#1
+DA43  D0 F3     BNE #DA38
+DA45  20 86 D6  JSR #D686
+DA48  F0 F2     BEQ #DA3C
+DA4A  20 04 D8  JSR #D804
+DA4D  D0 03     BNE #DA52
+DA4F  4C A4 DA  JMP #DAA4
+
+DA52  18        CLC
+DA53  A5 59     LDA #59
+DA55  65 61     ADC #61
+DA57  85 59     STA #59
+DA59  90 02     BCC #DA5D
+DA5B  E6 58     INC #58
+DA5D  38        SEC
+DA5E  A5 59     LDA #59
+DA60  E9 80     SBC @#80
+DA62  85 59     STA #59
+DA64  B0 02     BCS #DA68
+DA66  C6 58     DEC #58
+DA68  A2 05     LDX @#5
+DA6A  A0 00     LDY @#0
+DA6C  B5 59     LDA #59,X
+DA6E  95 66     STA #66,X
+DA70  94 59     STY #59,X
+DA72  CA        DEX
+DA73  D0 F7     BNE #DA6C
+DA75  A5 57     LDA #57
+DA77  45 5F     EOR #5F
+DA79  85 57     STA #57
+DA7B  A0 20     LDY @#20
+DA7D  20 FB D6  JSR #D6FB
+DA80  A5 67     LDA #67
+DA82  10 04     BPL #DA88
+DA84  18        CLC
+DA85  20 42 D6  JSR #D642
+DA88  20 FB D6  JSR #D6FB
+DA8B  06 6B     ASL #6B
+DA8D  26 6A     ROL #6A
+DA8F  26 69     ROL #69
+DA91  26 68     ROL #68
+DA93  26 67     ROL #67
+DA95  88        DEY
+DA96  D0 E8     BNE #DA80
+DA98  20 C8 D7  JSR #D7C8
+DA9B  20 80 D8  JSR #D880
+DA9E  A5 58     LDA #58
+DAA0  F0 0B     BEQ #DAAD
+DAA2  10 03     BPL #DAA7
+DAA4  A2 08     LDX @#8
+DAA6  A9 00     LDA @#0
+DAA8  95 56     STA #56,X
+DAAA  CA        DEX
+DAAB  D0 FB     BNE #DAA8
+DAAD  60        RTS
+
+
+  ??? subroutine
+  --------------
+
+DAAE  20 31 D8  JSR #D831
+DAB1  20 8D DE  JSR #DE8D
+DAB4  D0 26     BNE #DADC
+DAB6  20 86 D6  JSR #D686
+DAB9  F0 EC     BEQ #DAA7
+DABB  20 C3 D6  JSR #D6C3
+DABE  20 E5 D1  JSR #D1E5
+DAC1  D0 23     BNE #DAE6
+DAC3  60        RTS
+
+
+  Execute the command 'TAN'
+  -------------------------
+
+DAC4  20 EB D0  JSR #D0EB
+DAC7  20 9E DB  JSR #DB9E
+DACA  20 3D D8  JSR #D83D
+DACD  20 E6 DC  JSR #DCE6
+DAD0  20 9E DB  JSR #DB9E
+DAD3  20 23 D9  JSR #D923
+DAD6  20 F1 DC  JSR #DCF1
+DAD9  20 9E DB  JSR #DB9E
+DADC  20 86 D6  JSR #D686
+DADF  F0 CC     BEQ #DAAD
+DAE1  20 04 D8  JSR #D804
+DAE4  F0 C1     BEQ #DAA7
+DAE6  A5 57     LDA #57
+DAE8  45 5F     EOR #5F
+DAEA  85 57     STA #57
+DAEC  38        SEC
+DAED  A5 59     LDA #59
+DAEF  E5 61     SBC #61
+DAF1  85 59     STA #59
+DAF3  B0 02     BCS #DAF7
+DAF5  C6 58     DEC #58
+DAF7  18        CLC
+DAF8  A5 59     LDA #59
+DAFA  69 81     ADC @#81
+DAFC  85 59     STA #59
+DAFE  90 02     BCC #DB02
+DB00  E6 58     INC #58
+DB02  A2 05     LDX @#5
+DB04  B5 59     LDA #59,X
+DB06  95 66     STA #66,X
+DB08  CA        DEX
+DB09  D0 F9     BNE #DB04
+DB0B  46 67     LSR #67
+DB0D  66 68     ROR #68
+DB0F  66 69     ROR #69
+DB11  66 6A     ROR #6A
+DB13  66 6B     ROR #6B
+DB15  20 FB D6  JSR #D6FB
+DB18  A2 27     LDX @#27
+DB1A  A5 67     LDA #67
+DB1C  C5 62     CMP #62
+DB1E  D0 16     BNE #DB36
+DB20  A5 68     LDA #68
+DB22  C5 63     CMP #63
+DB24  D0 10     BNE #DB36
+DB26  A5 69     LDA #69
+DB28  C5 64     CMP #64
+DB2A  D0 0A     BNE #DB36
+DB2C  A5 6A     LDA #6A
+DB2E  C5 65     CMP #65
+DB30  D0 04     BNE #DB36
+DB32  A5 6B     LDA #6B
+DB34  C5 66     CMP #66
+DB36  90 24     BCC #DB5C
+DB38  A5 6B     LDA #6B
+DB3A  E5 66     SBC #66
+DB3C  85 6B     STA #6B
+DB3E  A5 6A     LDA #6A
+DB40  E5 65     SBC #65
+DB42  85 6A     STA #6A
+DB44  A5 69     LDA #69
+DB46  E5 64     SBC #64
+DB48  85 69     STA #69
+DB4A  A5 68     LDA #68
+DB4C  E5 63     SBC #63
+DB4E  85 68     STA #68
+DB50  A5 67     LDA #67
+DB52  E5 62     SBC #62
+DB54  85 67     STA #67
+DB56  A5 5E     LDA #5E
+DB58  09 01     ORA @#1
+DB5A  85 5E     STA #5E
+DB5C  20 CD D6  JSR #D6CD
+DB5F  06 6B     ASL #6B
+DB61  26 6A     ROL #6A
+DB63  26 69     ROL #69
+DB65  26 68     ROL #68
+DB67  26 67     ROL #67
+DB69  CA        DEX
+DB6A  D0 AE     BNE #DB1A
+DB6C  4C 98 DA  JMP #DA98
+
+
+  Execute the command 'SQR'
+  -------------------------
+
+DB6F  20 EB D0  JSR #D0EB
+DB72  20 86 D6  JSR #D686
+DB75  F0 26     BEQ #DB9D
+DB77  10 01     BPL #DB7A
+DB79  00        BRK
+
+DB7A  20 31 D8  JSR #D831
+DB7D  A5 59     LDA #59
+DB7F  4A        LSR A
+DB80  69 40     ADC @#40
+DB82  85 59     STA #59
+DB84  A9 05     LDA @#5
+DB86  85 6E     STA #6E
+DB88  20 27 D8  JSR #D827
+DB8B  20 AA DB  JSR #DBAA
+DB8E  20 B6 DA  JSR #DAB6
+DB91  20 A2 DB  JSR #DBA2
+DB94  20 3C D9  JSR #D93C
+DB97  C6 59     DEC #59
+DB99  C6 6E     DEC #6E
+DB9B  D0 EB     BNE #DB88
+DB9D  60        RTS
+
+
+  ??? subroutine
+  --------------
+
+DB9E  A9 D4     LDA @#D4
+DBA0  D0 0A     BNE #DBAC
+DBA2  A9 CA     LDA @#CA
+DBA4  D0 06     BNE #DBAC
+DBA6  A9 CF     LDA @#CF
+DBA8  D0 02     BNE #DBAC
+DBAA  A9 C5     LDA @#C5
+DBAC  85 6F     STA #6F
+DBAE  A9 03     LDA @#3
+DBB0  85 70     STA #70
+DBB2  60        RTS
+
+
+  ??? subroutine
+  --------------
+
+DBB3  20 EB D0  JSR #D0EB
+DBB6  20 86 D6  JSR #D686
+DBB9  F0 02     BEQ #DBBD
+DBBB  10 01     BPL #DBBE
+DBBD  00        BRK
+
+DBBE  A5 59     LDA #59
+DBC0  48        PHA
+DBC1  A9 81     LDA @#81
+DBC3  85 59     STA #59
+DBC5  20 C7 D8  JSR #D8C7
+DBC8  A9 C0     LDA @#C0
+DBCA  85 62     STA #62
+DBCC  A9 81     LDA @#81
+DBCE  85 61     STA #61
+DBD0  85 5F     STA #5F
+DBD2  20 41 D9  JSR #D941
+DBD5  E6 59     INC #59
+DBD7  A9 FE     LDA @#FE
+DBD9  A0 DB     LDY @#DB
+DBDB  20 27 DC  JSR #DC27
+DBDE  20 31 D8  JSR #D831
+DBE1  68        PLA
+DBE2  38        SEC
+DBE3  E9 81     SBC @#81
+DBE5  20 B2 D7  JSR #D7B2
+DBE8  A9 F9     LDA @#F9
+DBEA  85 6F     STA #6F
+DBEC  A9 DB     LDA @#DB
+DBEE  85 70     STA #70
+DBF0  20 45 DA  JSR #DA45
+DBF3  20 AA DB  JSR #DBAA
+DBF6  4C 3C D9  JMP #D93C
+
+
+  ??? Table
+  ---------
+
+DBF9                             80 31 72 17 F8 07 85
+DC00  17 6E D4 85 80 28 C7 12 A0 84 70 4E 5F F2 81 00
+DC10  00 FE EF 84 0F FF DA E1 81 7F FF FF 93 82 40 00
+DC20  00 0C 7F 4F 99 1F 65
+
+
+  ??? subroutine
+  --------------
+
+DC27  85 71     STA #71
+DC29  84 72     STY #72
+DC2B  20 31 D8  JSR #D831
+DC2E  A0 00     LDY @#0
+DC30  B1 71     LDA (#71),Y
+DC32  85 6C     STA #6C
+DC34  E6 71     INC #71
+DC36  D0 02     BNE #DC3A
+DC38  E6 72     INC #72
+DC3A  A5 71     LDA #71
+DC3C  85 6F     STA #6F
+DC3E  A5 72     LDA #72
+DC40  85 70     STA #70
+DC42  20 E5 D1  JSR #D1E5
+DC45  20 AA DB  JSR #DBAA
+DC48  20 B6 DA  JSR #DAB6
+DC4B  18        CLC
+DC4C  A5 71     LDA #71
+DC4E  69 05     ADC @#5
+DC50  85 71     STA #71
+DC52  85 6F     STA #6F
+DC54  A5 72     LDA #72
+DC56  69 00     ADC @#0
+DC58  85 72     STA #72
+DC5A  85 70     STA #70
+DC5C  20 3C D9  JSR #D93C
+DC5F  C6 6C     DEC #6C
+DC61  D0 E2     BNE #DC45
+DC63  60        RTS
+
+
+  Execute the command 'ATN'
+  -------------------------
+
+DC64  20 EB D0  JSR #D0EB
+DC67  20 86 D6  JSR #D686
+DC6A  F0 0D     BEQ #DC79
+DC6C  10 0C     BPL #DC7A
+DC6E  A9 00     LDA @#0
+DC70  85 57     STA #57
+DC72  20 7A DC  JSR #DC7A
+DC75  A9 80     LDA @#80
+DC77  85 57     STA #57
+DC79  60        RTS
+
+DC7A  A5 59     LDA #59
+DC7C  C9 81     CMP @#81
+DC7E  90 0C     BCC #DC8C
+DC80  20 AE DA  JSR #DAAE
+DC83  20 8C DC  JSR #DC8C
+DC86  20 93 DD  JSR #DD93
+DC89  4C 39 D9  JMP #D939
+
+DC8C  A5 59     LDA #59
+DC8E  C9 73     CMP @#73
+DC90  90 E7     BCC #DC79
+DC92  20 2C D8  JSR #D82C
+DC95  20 C7 D8  JSR #D8C7
+DC98  A9 80     LDA @#80
+DC9A  85 61     STA #61
+DC9C  85 62     STA #62
+DC9E  85 5F     STA #5F
+DCA0  20 41 D9  JSR #D941
+DCA3  A9 B0     LDA @#B0
+DCA5  A0 DC     LDY @#DC
+DCA7  20 27 DC  JSR #DC27
+DCAA  20 A6 DB  JSR #DBA6
+DCAD  4C 45 DA  JMP #DA45
+
+
+  ??? Table
+  ---------
+
+DCB0  09 85 A3 59 E8 67 80 1C 9D 07 36 80 57 BB 78 DF
+DCC0  80 CA 9A 0E 83 84 8C BB CA 6E 81 95 96 06 DE 81
+DCD0  0A C7 6C 52 7F 7D AD 90 A1 82 FB 62 57 2F 80 6D
+DCE0  63 38 2C
+
+
+  Execute the command 'COS'
+  -------------------------
+
+DCE3  20 EB D0  JSR #D0EB
+DCE6  20 24 DD  JSR #DD24
+DCE9  E6 6E     INC #6E
+DCEB  4C F4 DC  JMP #DCF4
+
+
+  Execute the command 'SIN'
+  -------------------------
+
+DCEE  20 EB D0  JSR #D0EB
+DCF1  20 24 DD  JSR #DD24
+DCF4  46 6E     LSR #6E
+DCF6  90 03     BCC #DCFB
+DCF8  20 86 DC  JSR #DC86
+DCFB  46 6E     LSR #6E
+DCFD  90 06     BCC #DD05
+DCFF  20 05 DD  JSR #DD05
+DD02  4C BF D1  JMP #D1BF
+
+DD05  20 2C D8  JSR #D82C
+DD08  20 93 DD  JSR #DD93
+DD0B  20 04 D8  JSR #D804
+DD0E  C6 61     DEC #61
+DD10  A9 80     LDA @#80
+DD12  85 5F     STA #5F
+DD14  20 41 D9  JSR #D941
+DD17  A9 A6     LDA @#A6
+DD19  A0 DD     LDY @#DD
+DD1B  20 27 DC  JSR #DC27
+DD1E  20 A6 DB  JSR #DBA6
+DD21  4C 45 DA  JMP #DA45
+ÿ
+
+  ???
+  ---
+
+DD24  A5 59     LDA #59
+DD26  C9 98     CMP @#98
+DD28  B0 54     BCS #DD7E
+DD2A  20 31 D8  JSR #D831
+DD2D  20 93 DD  JSR #DD93
+DD30  20 DC DA  JSR #DADC
+DD33  20 9A D8  JSR #D89A
+DD36  A5 5D     LDA #5D
+DD38  85 6E     STA #6E
+DD3A  05 5C     ORA #5C
+DD3C  05 5B     ORA #5B
+DD3E  05 5A     ORA #5A
+DD40  F0 3E     BEQ #DD80
+DD42  20 AC D2  JSR #D2AC
+DD45  20 27 D8  JSR #D827
+DD48  20 86 DD  JSR #DD86
+DD4B  20 45 DA  JSR #DA45
+DD4E  20 AA DB  JSR #DBAA
+DD51  20 3C D9  JSR #D93C
+DD54  20 3D D8  JSR #D83D
+DD57  20 A2 DB  JSR #DBA2
+DD5A  20 E5 D1  JSR #D1E5
+DD5D  20 8A DD  JSR #DD8A
+DD60  20 45 DA  JSR #DA45
+DD63  20 AA DB  JSR #DBAA
+DD66  20 3C D9  JSR #D93C
+DD69  A5 57     LDA #57
+DD6B  10 12     BPL #DD7F
+DD6D  20 8A DD  JSR #DD8A
+DD70  20 33 D9  JSR #D933
+DD73  20 86 DD  JSR #DD86
+DD76  20 33 D9  JSR #D933
+DD79  C6 6E     DEC #6E
+DD7B  4C 69 DD  JMP #DD69
+
+DD7E  00        BRK
+
+DD7F  60        RTS
+
+DD80  20 DA D2  JSR #D2DA
+DD83  4C 69 DD  JMP #DD69
+
+
+  ??? subroutine
+  --------------
+
+DD86  A9 97     LDA @#97
+DD88  D0 02     BNE #DD8C
+
+
+  ??? subroutine
+  --------------
+
+DD8A  A9 9C     LDA @#9C
+DD8C  85 6F     STA #6F
+DD8E  A9 DD     LDA @#DD
+DD90  85 70     STA #70
+DD92  60        RTS
+
+
+  ??? subroutine
+  --------------
+
+DD93  A9 A1     LDA @#A1
+DD95  D0 F5     BNE #DD8C
+
+
+  ??? Table
+  ---------
+
+DD97                       81 C9 00 00 00 75 FD AA 22
+DDA0  17 81 49 0F DA A2 08 84 04 C7 3C FB 81 E0 4F 5D
+DDB0  AD 82 80 00 69 B8 82 5B CF 1D B5 82 BF CE 82 1E
+DDC0  82 45 44 7F 32 7F 62 44 5A D2 83 82 14 8A 27 80
+DDD0  66 7B 21 4D
+
+
+  Execute the command 'EXP'
+  -------------------------
+
+DDD4  20 EB D0  JSR #D0EB
+DDD7  A5 59     LDA #59
+DDD9  C9 87     CMP @#87
+DDDB  90 10     BCC #DDED
+DDDD  D0 06     BNE #DDE5
+DDDF  A5 5A     LDA #5A
+DDE1  C9 B3     CMP @#B3
+DDE3  90 08     BCC #DDED
+DDE5  A5 57     LDA #57
+DDE7  10 03     BPL #DDEC
+DDE9  4C A4 DA  JMP #DAA4
+
+DDEC  00        BRK
+
+DDED  A5 59     LDA #59
+DDEF  C9 80     CMP @#80
+DDF1  90 29     BCC #DE1C
+DDF3  20 9A D8  JSR #D89A
+DDF6  20 E2 D8  JSR #D8E2
+DDF9  A5 5D     LDA #5D
+DDFB  85 6E     STA #6E
+DDFD  20 13 D9  JSR #D913
+DE00  20 1C DE  JSR #DE1C
+DE03  20 2C D8  JSR #D82C
+DE06  A9 23     LDA @#23
+DE08  85 6F     STA #6F
+DE0A  A9 DE     LDA @#DE
+DE0C  85 70     STA #70
+DE0E  20 E5 D1  JSR #D1E5
+DE11  A5 6E     LDA #6E
+DE13  20 51 DE  JSR #DE51
+DE16  20 A6 DB  JSR #DBA6
+DE19  4C 45 DA  JMP #DA45
+
+DE1C  A9 28     LDA @#28
+DE1E  A0 DE     LDY @#DE
+DE20  4C 27 DC  JMP #DC27
+
+
+  ??? Table
+  ---------
+
+DE23           82 2D F8 54 58 07 83 E0 20 86 5B 82 80
+DE30  53 93 B8 83 20 00 06 A1 82 00 00 21 63 82 C0 00
+DE40  00 02 82 80 00 00 0C 81 00 00 00 00 81 00 00 00
+DE50  00
+
+
+  ??? subroutine
+  --------------
+
+DE51  AA        TAX
+DE52  10 09     BPL #DE5D
+DE54  CA        DEX
+DE55  8A        TXA
+DE56  49 FF     EOR @#FF
+DE58  48        PHA
+DE59  20 AE DA  JSR #DAAE
+DE5C  68        PLA
+DE5D  48        PHA
+DE5E  20 31 D8  JSR #D831
+DE61  20 8D DE  JSR #DE8D
+DE64  68        PLA
+DE65  F0 0A     BEQ #DE71
+DE67  38        SEC
+DE68  E9 01     SBC @#1
+DE6A  48        PHA
+DE6B  20 45 DA  JSR #DA45
+DE6E  4C 64 DE  JMP #DE64
+
+DE71  60        RTS
+
+
+  Execute the command 'HTN'
+  -------------------------
+
+DE72  20 EB D0  JSR #D0EB
+DE75  A5 57     LDA #57
+DE77  10 0A     BPL #DE83
+DE79  A9 00     LDA @#0
+DE7B  85 57     STA #57
+DE7D  20 83 DE  JSR #DE83
+DE80  4C BF D1  JMP #D1BF
+
+
+  Something to do with 'HTN' subroutine
+  -------------------------------------
+
+DE83  A5 59     LDA #59
+DE85  C9 81     CMP @#81
+DE87  90 33     BCC #DEBC
+DE89  C9 85     CMP @#85
+DE8B  90 0B     BCC #DE98
+DE8D  20 A4 DA  JSR #DAA4
+DE90  A0 80     LDY @#80
+DE92  84 5A     STY #5A
+DE94  C8        INY
+DE95  84 59     STY #59
+DE97  60        RTS
+
+DE98  E6 59     INC #59
+DE9A  A9 80     LDA @#80
+DE9C  85 57     STA #57
+DE9E  20 D7 DD  JSR #DDD7
+DEA1  20 31 D8  JSR #D831
+DEA4  20 8D DE  JSR #DE8D
+DEA7  20 3C D9  JSR #D93C
+DEAA  20 27 D8  JSR #D827
+DEAD  20 8D DE  JSR #DE8D
+DEB0  20 AA DB  JSR #DBAA
+DEB3  20 33 D9  JSR #D933
+DEB6  20 A2 DB  JSR #DBA2
+DEB9  4C DC DA  JMP #DADC
+
+DEBC  20 2C D8  JSR #D82C
+DEBF  20 8D DE  JSR #DE8D
+DEC2  C6 59     DEC #59
+DEC4  20 33 D9  JSR #D933
+DEC7  A9 D4     LDA @#D4
+DEC9  A0 DE     LDY @#DE
+DECB  20 27 DC  JSR #DC27
+DECE  20 A6 DB  JSR #DBA6
+DED1  4C 45 DA  JMP #DA45
+
+
+  ??? Table
+  ---------
+
+DED4              08 7E 85 51 B3 0C 86 DE B0 7D 73 7C
+DEE0  23 D8 E9 9A 87 34 82 1D 80 81 9A 20 6C ED 81 BD
+DEF0  32 34 2E 7F 5D 46 87 B4 82 68 3E 43 F7 80 6C 9A
+DF00  9E BB
+
+
+  Execute the command 'COLOUR'
+  ----------------------------
+
+DF02  20 C8 C3  JSR #C3C8
+DF05  A5 52     LDA #52
+DF07  29 03     AND @#3
+DF09  A8        TAY
+DF0A  B9 4E DF  LDA #DF4E,Y
+DF0D  8D FD 03  STA #3FD
+DF10  AD 00 B0  LDA #B000
+DF13  29 F0     AND @#F0
+DF15  C9 70     CMP @#70
+DF17  D0 0C     BNE #DF25
+DF19  A9 00     LDA @#0
+DF1B  A8        TAY
+DF1C  99 00 86  STA #8600,Y
+DF1F  99 00 87  STA #8700,Y
+DF22  88        DEY
+DF23  D0 F7     BNE #DF1C
+DF25  AD 00 B0  LDA #B000
+DF28  29 DF     AND @#DF
+DF2A  8D 00 B0  STA #B000
+DF2D  2A        ROL A
+DF2E  2A        ROL A
+DF2F  2A        ROL A
+DF30  29 03     AND @#3
+DF32  A8        TAY
+DF33  B9 42 DF  LDA #DF42,Y
+DF36  8D FE 03  STA #3FE
+DF39  B9 46 DF  LDA #DF46,Y
+DF3C  8D FF 03  STA #3FF
+DF3F  4C 58 C5  JMP #C558
+
+
+  Colour Point Plot routine LSB Address Table
+  -------------------------------------------
+
+DF42  52 70 88 A0
+
+
+  Colour Point Plot routine MSB Address Table
+  -------------------------------------------
+
+
+DF46  DF DF DF DF
+
+
+  ??? Data Table
+  --------------
+
+DF4A  3F CF F3 FC
+
+
+  Colour Byte Table
+  -----------------
+
+DF4E  00 55 AA FF
+
+
+  Mode 1 Colour Point Plot routine
+  --------------------------------
+
+DF52  A5 5B     LDA #5B
+DF54  05 5D     ORA #5D
+DF56  D0 47     BNE #DF9F
+DF58  A5 5A     LDA #5A
+DF5A  C9 40     CMP @#40
+DF5C  B0 41     BCS #DF9F
+DF5E  4A        LSR A
+DF5F  4A        LSR A
+DF60  85 5F     STA #5F
+DF62  A0 00     LDY @#0
+DF64  84 60     STY #60
+DF66  A9 3F     LDA @#3F
+DF68  38        SEC
+DF69  E5 5C     SBC #5C
+DF6B  C9 40     CMP @#40
+DF6D  90 4F     BCC #DFBE
+DF6F  60        RTS
+
+
+  Mode 2 Colour Point Plot routine
+  --------------------------------
+
+DF70  A5 5B     LDA #5B
+DF72  05 5D     ORA #5D
+DF74  D0 29     BNE #DF9F
+DF76  A5 5A     LDA #5A
+DF78  30 25     BMI #DF9F
+DF7A  4A        LSR A
+DF7B  4A        LSR A
+DF7C  85 5F     STA #5F
+DF7E  A9 3F     LDA @#3F
+DF80  38        SEC
+DF81  E5 5C     SBC #5C
+DF83  C9 40     CMP @#40
+DF85  90 30     BCC #DFB7
+DF87  60        RTS
+
+
+  Mode 3 Colour Point Plot routine
+  --------------------------------
+
+DF88  A5 5B     LDA #5B
+DF8A  05 5D     ORA #5D
+DF8C  D0 11     BNE #DF9F
+DF8E  A5 5A     LDA #5A
+DF90  30 0D     BMI #DF9F
+DF92  4A        LSR A
+DF93  4A        LSR A
+DF94  85 5F     STA #5F
+DF96  A9 5F     LDA @#5F
+DF98  38        SEC
+DF99  E5 5C     SBC #5C
+DF9B  C9 60     CMP @#60
+DF9D  90 18     BCC #DFB7
+DF9F  60        RTS
+
+
+  Mode 4 Colour Point Plot routine
+  --------------------------------
+
+DFA0  A5 5B     LDA #5B
+DFA2  05 5D     ORA #5D
+DFA4  D0 F9     BNE #DF9F
+DFA6  A5 5A     LDA #5A
+DFA8  30 F5     BMI #DF9F
+DFAA  4A        LSR A
+DFAB  4A        LSR A
+DFAC  85 5F     STA #5F
+DFAE  A9 BF     LDA @#BF
+DFB0  38        SEC
+DFB1  E5 5C     SBC #5C
+DFB3  C9 C0     CMP @#C0
+DFB5  B0 E8     BCS #DF9F
+DFB7  A0 00     LDY @#0
+DFB9  84 60     STY #60
+DFBB  0A        ASL A
+DFBC  26 60     ROL #60
+DFBE  0A        ASL A
+DFBF  26 60     ROL #60
+DFC1  0A        ASL A
+DFC2  26 60     ROL #60
+DFC4  0A        ASL A
+DFC5  26 60     ROL #60
+DFC7  0A        ASL A
+DFC8  26 60     ROL #60
+DFCA  65 5F     ADC #5F
+DFCC  85 5F     STA #5F
+DFCE  A5 60     LDA #60
+DFD0  69 80     ADC @#80
+DFD2  85 60     STA #60
+DFD4  A5 5A     LDA #5A
+DFD6  29 03     AND @#3
+DFD8  AA        TAX
+DFD9  BD 4A DF  LDA #DF4A,X
+DFDC  A6 5E     LDX #5E
+DFDE  CA        DEX
+DFDF  F0 0F     BEQ #DFF0
+DFE1  CA        DEX
+DFE2  F0 05     BEQ #DFE9
+DFE4  31 5F     AND (#5F),Y
+DFE6  91 5F     STA (#5F),Y
+DFE8  60        RTS
+
+DFE9  49 FF     EOR @#FF
+DFEB  51 5F     EOR (#5F),Y
+DFED  91 5F     STA (#5F),Y
+DFEF  60        RTS
+
+DFF0  AA        TAX
+DFF1  31 5F     AND (#5F),Y
+DFF3  91 5F     STA (#5F),Y
+DFF5  8A        TXA
+DFF6  49 FF     EOR @#FF
+DFF8  2D FD 03  AND #3FD
+DFFB  11 5F     ORA (#5F),Y
+DFFD  91 5F     STA (#5F),Y
+DFFF  60        RTS

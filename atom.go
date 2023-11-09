@@ -31,8 +31,6 @@ type Atom struct {
 	ram [romStart]uint8
 	rom [0x10000 - romStart]uint8
 
-	raiseNMIDelayedCycle uint64
-
 	traceCPU bool
 }
 
@@ -70,6 +68,7 @@ func (a *Atom) Run() {
 	for {
 		// Keyboard
 		a.keyboard.processKeys()
+		a.fdc.tick(a.cpu.GetCycles())
 
 		// Reset
 		if a.keyboard.getBreak() {
@@ -81,12 +80,6 @@ func (a *Atom) Run() {
 			}
 		} else {
 			isDoingReset = false
-		}
-
-		// NMI
-		if a.raiseNMIDelayedCycle != 0 && a.cpu.GetCycles() >= a.raiseNMIDelayedCycle {
-			a.cpu.RaiseNMI()
-			a.raiseNMIDelayedCycle = 0
 		}
 
 		// Traces
@@ -101,10 +94,10 @@ func (a *Atom) Run() {
 			// Resume tracing after the flyback wait
 			a.cpu.SetTrace(a.traceCPU)
 		}
-		a.traceOS()
+		//a.traceOS()
 
-		// Trace DOS
-		//a.cpu.SetTrace(pc >= 0xe000 && pc <= 0xefff)
+		// Trace DOS ROM
+		//a.cpu.SetTrace((pc >= 0xe000 && pc <= 0xefff) || pc < 0x100)
 
 		// CPU
 		a.cpu.ExecuteInstruction()
@@ -125,10 +118,6 @@ func (a *Atom) Run() {
 		}
 
 	}
-}
-
-func (a *Atom) raiseNMIDelayed(delayCycles uint64) {
-	a.raiseNMIDelayedCycle = a.cpu.GetCycles() + delayCycles
 }
 
 //go:embed resources

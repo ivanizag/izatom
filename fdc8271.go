@@ -25,18 +25,26 @@ TODO / BUGS:
 */
 
 type fdc8271 struct {
-	a       *Atom
-	command uint8
-	status  uint8
-	result  uint8
-	param   uint8
+	a   *Atom
+	log bool
+
+	command  uint8
+	status   uint8
+	result   uint8
+	register uint8
+	param    uint8
+
+	select0      bool
+	select0delay uint8
 
 	track       uint8
 	sector      uint8
 	sectorCount uint8
 
-	index   int
-	readEnd int
+	index                int
+	readEnd              int
+	nextByte             uint8
+	raiseNMIDelayedCycle uint64
 
 	data []uint8
 }
@@ -48,15 +56,65 @@ func NewFDC8271(a *Atom) *fdc8271 {
 	return &fdc
 }
 
-func (fdc *fdc8271) reset() {
-	// TODO
+func (fdc *fdc8271) logf(format string, a ...interface{}) {
+	if fdc.log {
+		fmt.Printf("[FDC] "+format, a...)
+	}
 }
 
-func (fdc *fdc8271) startRead() {
-	fdc.index = 256*10*int(fdc.track) + 256*int(fdc.sector)
-	fdc.readEnd = fdc.index + 256*int(fdc.sectorCount)
+func (fdc *fdc8271) tick(cycle uint64) {
+	if fdc.select0delay > 0 {
+		fdc.select0delay--
+		if fdc.select0delay == 0 {
+			fdc.logf("Drive 0 ready\n")
+			fdc.select0 = true
+		}
+	}
 
-	fmt.Printf("[FDC] Read data from %v to %v\n", fdc.index, fdc.readEnd)
+	if fdc.raiseNMIDelayedCycle > 0 && cycle >= fdc.raiseNMIDelayedCycle {
+
+		if fdc.index == fdc.readEnd {
+			// We are done
+			fdc.status = 0x00 /* not busy */ |
+				0x10 /* Result full */ |
+				0x08 /* Interrupt request */
+			fdc.result = 0x00
+		} else {
+			fdc.nextByte = fdc.data[fdc.index]
+			fdc.status = 0x80 /* busy */ |
+				0x08 /* Interrupt request */ |
+				0x04 /* Non DMA mode */
+			fdc.index++
+		}
+		// fdc.logf("[FDC] Raise NMI 0x%02x %v\n", fdc.status, fdc.index)
+
+		fdc.raiseNMIDelayedCycle = 0
+		fdc.a.cpu.RaiseNMI()
+	}
+}
+
+func (fdc *fdc8271) raiseNMIDelayed() {
+	fdc.raiseNMIDelayedCycle = fdc.a.cpu.GetCycles() + 400
+}
+
+func (fdc *fdc8271) writeSpecialRegister(register uint8, value uint8) {
+	switch register {
+	case 0x17: // Mode register
+		fdc.logf("Mode register 0x%02x: 0x%02x-%08b\n", register, value, value)
+	case 0x23: // Drive control output port
+		fdc.logf("Drive control output port register 0x%02x: 0x%02x-%08b\n", register, value, value)
+		if (value & 0x40) != 0 {
+			fdc.logf("Drive 0 selected\n")
+			fdc.select0 = false
+			fdc.select0delay = 200
+		}
+	default:
+		fdc.logf("Unknown special register 0x%02x: 0x%02x-%08b\n", register, value, value)
+	}
+}
+
+func (fdc *fdc8271) reset() {
+	// TODO
 }
 
 func (fdc *fdc8271) write(port uint8, value uint8) {
@@ -68,24 +126,27 @@ func (fdc *fdc8271) write(port uint8, value uint8) {
 		drive := value >> 6
 		switch fdc.command {
 		case 0x13: // READ DATA
-			fmt.Printf("[FDC] Read data drive %v\n", drive)
+			fdc.logf("Read data drive %v\n", drive)
 		case 0x29: // SEEK
-			fmt.Printf("[FDC] Seek drive %v\n", drive)
+			fdc.logf("Seek drive %v\n", drive)
 		case 0x2c: // READ DRIVE STATUS
-			fmt.Printf("[FDC] Read drive status %v\n", drive)
-			fdc.result = 0x80 | 0x10 /*index*/ | 0x04 /* ready 0*/
+			fdc.logf("Read drive status %v\n", drive)
+			fdc.result = 0x80 | 0x10 /*index*/
+			if fdc.select0 {
+				fdc.result |= 0x04 /* ready 0 */
+			}
 			if fdc.track == 0 {
 				fdc.result |= 0x02 /* track 0 */
 			}
 		case 0x35: // SPECIFY
-			fmt.Printf("[FDC] Specify drive %v\n", drive)
+			fdc.logf("Specify drive %v\n", drive)
 		case 0x3a: // WRITE SPECIAL REGISTER
-			fmt.Printf("[FDC] Write special register drive %v\n", drive)
+			fdc.logf("Write special register drive %v\n", drive)
 		default:
-			fmt.Printf("[FDC] Command: Drive %v, Opcode 0x%02x-%06b\n", drive, fdc.command, fdc.command)
+			fdc.logf("Unknown command: Drive %v, Opcode 0x%02x-%06b\n", drive, fdc.command, fdc.command)
 		}
 	case 1:
-		fmt.Printf("[FDC] Parameter: 0x%02x-%08b\n", value, value)
+		fdc.logf("Parameter: 0x%02x-%08b\n", value, value)
 		switch fdc.command {
 		case 0x13: // READ DATA
 			switch fdc.param {
@@ -95,25 +156,33 @@ func (fdc *fdc8271) write(port uint8, value uint8) {
 				fdc.sector = value
 			case 2:
 				fdc.sectorCount = value & 0x1f
-				fmt.Printf("[FDC] Multirecord parameters: track %v, sector %v, count %v, record size %v\n",
+				fdc.logf("Multirecord parameters: track %v, sector %v, count %v, record size %v\n",
 					fdc.track, fdc.sector, fdc.sectorCount, 128*(1<<(value>>5)))
-				fdc.status = 0x80 /* busy */ |
-					0x08 /* interrupt request */ |
-					0x04 /* Non DMA mode */
-				fdc.a.raiseNMIDelayed(40)
-				fdc.startRead()
+				fdc.status = 0x80 /* busy */
+				fdc.index = 256*10*int(fdc.track) + 256*int(fdc.sector)
+				fdc.readEnd = fdc.index + 256*int(fdc.sectorCount)
+
+				fdc.logf("Read data from %v to %v\n", fdc.index, fdc.readEnd)
+				fdc.raiseNMIDelayed()
 			}
 		case 0x29: // SEEK
 			fdc.track = value
+		case 0x3a: // WRITE SPECIAL REGISTER
+			switch fdc.param {
+			case 0:
+				fdc.register = value
+			case 1:
+				fdc.writeSpecialRegister(fdc.register, value)
+			}
 		}
 		fdc.param++
 	case 2:
 		fdc.status = 0x00
-		fmt.Printf("[FDC] Reset: %v\n", value)
+		fdc.logf("Reset: %v\n", value)
 	case 3:
-		fmt.Printf("[FDC] Do not use: %v\n", value)
+		fdc.logf("Do not use: %v\n", value)
 	default:
-		fmt.Printf("[FDC] Write data at %v: %v\n", port, value)
+		fdc.logf("Write data at %v: %v\n", port, value)
 
 	}
 
@@ -122,28 +191,25 @@ func (fdc *fdc8271) write(port uint8, value uint8) {
 func (fdc *fdc8271) read(port uint8) uint8 {
 	switch port {
 	case 0:
-		// fmt.Printf("[FDC] Status\n")
+		//fdc.logf("Status: 0x%02x\n", fdc.status)
 		return fdc.status
 	case 1:
-		fmt.Printf("[FDC] Result\n")
+		fdc.logf("Result: 0x%02x\n", fdc.result)
 		return fdc.result
 	case 2:
-		fmt.Printf("[FDC] Reset Read (Illegal)\n")
+		fdc.logf("Reset Read (Illegal)\n")
 	case 3:
-		fmt.Printf("[FDC] Do not use\n")
+		fdc.logf("Do not use\n")
 	default:
-		value := fdc.data[fdc.index]
-		fdc.index++
-
-		if fdc.index >= fdc.readEnd {
-			fdc.status = 0x00 + 0x04 /* Non DMA mode */
-			fmt.Printf("[FDC] Read data completed\n")
+		if (fdc.status & 0x10) != 0 /* Result full */ {
+			fdc.status = 0x00
 		} else {
-			fdc.a.raiseNMIDelayed(40)
+			fdc.status = 0x80 /* busy */
+			fdc.raiseNMIDelayed()
 		}
 
-		//fmt.Printf("[FDC] Read data at %v\n", port)
-		return value
+		//fdc.logf("Read data at %v\n", port)
+		return fdc.nextByte
 	}
 	return 0
 }
