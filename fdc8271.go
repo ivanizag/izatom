@@ -52,7 +52,6 @@ type fdc8271 struct {
 func NewFDC8271(a *Atom) *fdc8271 {
 	var fdc fdc8271
 	fdc.a = a
-	fdc.loadDisk()
 	return &fdc
 }
 
@@ -161,6 +160,10 @@ func (fdc *fdc8271) write(port uint8, value uint8) {
 				fdc.status = 0x80 /* busy */
 				fdc.index = 256*10*int(fdc.track) + 256*int(fdc.sector)
 				fdc.readEnd = fdc.index + 256*int(fdc.sectorCount)
+				if fdc.readEnd > len(fdc.data) {
+					fdc.readEnd = len(fdc.data)
+					//panic("Read beyond end of disk")
+				}
 
 				fdc.logf("Read data from %v to %v\n", fdc.index, fdc.readEnd)
 				fdc.raiseNMIDelayed()
@@ -214,8 +217,8 @@ func (fdc *fdc8271) read(port uint8) uint8 {
 	return 0
 }
 
-func (fdc *fdc8271) loadDisk( /*name string*/ ) {
-	data, err := os.ReadFile("../disks/mode4_graphics.40t")
+func (fdc *fdc8271) loadDisk(name string) {
+	data, err := os.ReadFile(name)
 	if err != nil {
 		panic(err)
 	}
@@ -224,7 +227,7 @@ func (fdc *fdc8271) loadDisk( /*name string*/ ) {
 }
 
 /*
-When issuing the command *DOS: the following sequence is used:
+When issuing the command *DOS, the following sequence is used:
 [FDC] Reset: 1
 [FDC] Reset: 0
 

@@ -32,6 +32,7 @@ type Atom struct {
 	rom [0x10000 - romStart]uint8
 
 	traceCPU bool
+	traceIO  bool
 }
 
 func NewAtom() *Atom {
@@ -48,9 +49,14 @@ func NewAtom() *Atom {
 	a.loadRom("abasic.rom", 0xc000)
 	a.loadRom("Demo.rom", 0xa000)
 
+	//a.traceIO = true
 	//a.traceCPU = true
 	a.cpu.SetTrace(a.traceCPU)
 	return &a
+}
+
+func (a *Atom) LoadDisk(path string) {
+	a.fdc.loadDisk(path)
 }
 
 const (
@@ -120,6 +126,13 @@ func (a *Atom) Run() {
 	}
 }
 
+// log
+func (a *Atom) logf(format string, args ...interface{}) {
+	if a.traceIO {
+		fmt.Printf(format, args...)
+	}
+}
+
 //go:embed resources
 var resources embed.FS
 
@@ -145,15 +158,11 @@ func (a *Atom) Peek(address uint16) uint8 {
 	} else if address&0xf800 == ppiaStart {
 		port := uint8(address & 0x03) // 2 bits used
 		value := a.ppia.read(port)
-		if a.cpu.GetTrace() {
-			fmt.Printf("[PPIA] Read: %04x, PPIA port%c = 0x%02x\n", address, 'A'+port, value)
-		}
+		//a.logf("[PPIA] Read: %04x, PPIA port%c = 0x%02x\n", address, 'A'+port, value)
 		return value
 	} else if address&0xf800 == viaStart {
 		port := uint8(address & 0x0f) // 4 bits used
-		if a.cpu.GetTrace() {
-			fmt.Printf("[VIA] Read: %04x, VIA port%c\n", address, 'A'+port)
-		}
+		a.logf("[VIA] Read: %04x, VIA port%c\n", address, 'A'+port)
 		return 0x00
 	} else {
 		return a.rom[address-romStart]
@@ -172,15 +181,11 @@ func (a *Atom) Poke(address uint16, value uint8) {
 		a.ram[address] = value
 	} else if address&0xf800 == ppiaStart {
 		port := uint8(address & 0x03) // 2 bits used
-		if a.cpu.GetTrace() {
-			fmt.Printf("[PPIA] Write: %04x, PPIA port%c = 0x%02x - %08b\n", address, 'A'+port, value, value)
-		}
+		//a.logf("[PPIA] Write: %04x, PPIA port%c = 0x%02x - %08b\n", address, 'A'+port, value, value)
 		a.ppia.write(port, value)
 	} else if address&0xf800 == viaStart {
 		port := uint8(address & 0x0f) // 4 bits used
-		if a.cpu.GetTrace() {
-			fmt.Printf("[VIA] Write: %04x, VIA port%c = 0x%02x - %08b\n", address, 'A'+port, value, value)
-		}
+		a.logf("[VIA] Write: %04x, VIA port %c = 0x%02x - %08b\n", address, 'A'+port, value, value)
 	}
 }
 

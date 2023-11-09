@@ -1,6 +1,7 @@
 package main
 
 import (
+	"os"
 	"unsafe"
 
 	"github.com/ivanizag/izatom"
@@ -10,6 +11,9 @@ import (
 func main() {
 	// Create a new atom
 	a := izatom.NewAtom()
+	if len(os.Args) > 1 {
+		a.LoadDisk(os.Args[1])
+	}
 
 	// Run the atom
 	go a.Run()
